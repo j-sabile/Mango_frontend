@@ -1,10 +1,20 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
 import NavBar from "../components/NavBar";
 
 function Home() {
+  const [api, setApi] = useState("Loading...");
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API}`)
+      .then((res) => res.json())
+      .then((res) => setApi(res));
+  }, []);
+
   return (
     <>
       <NavBar />
+      {api}
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex" }}>
           <div>

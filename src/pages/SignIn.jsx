@@ -7,16 +7,10 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [testApi, setTestApi] = useState("Loading...");
-
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API}/is-logged-in`, { method: "POST", credentials: "include" })
       .then((res) => res.json())
       .then((res) => res.isLoggedIn && navigate("/"));
-
-    fetch(`${import.meta.env.VITE_API}`)
-      .then((res) => res.json())
-      .then((res) => setTestApi(res));
   }, []);
 
   const handleSignIn = async (e) => {
@@ -28,14 +22,17 @@ function SignIn() {
       body: JSON.stringify({ email: email, password: password }),
     })
       .then((res) => res.json())
-      .then((res) => console.log(res));
+      .then((res) => {
+        console.log(res);
+        if (res.success) navigate("/");
+        else alert("Wrong Credentials");
+      });
   };
 
   return (
     <>
       <NavBar />
       <form>
-        {testApi}
         <input type="email" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <button type="submit" onClick={handleSignIn}>
