@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import NavBar from "../components/NavBar";
 
 function SignIn() {
@@ -39,6 +39,7 @@ function SignIn() {
           Sign In
         </button>
       </form>
+      <Link to="/create-account">Create Account</Link>
     </>
   );
 }

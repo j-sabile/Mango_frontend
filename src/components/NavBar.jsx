@@ -19,7 +19,9 @@ function NavBar() {
 
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <div>Mango Graham Float</div>
+      <Link to="/">
+        <div>Mango Graham Float</div>
+      </Link>
 
       {isLoggedIn !== null &&
         (isLoggedIn ? (
