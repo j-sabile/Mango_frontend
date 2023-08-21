@@ -107,7 +107,7 @@ function Chat() {
         conversationsRef.current = request;
       });
 
-    const localSocket = io("ws://localhost:3001", { withCredentials: true });
+    const localSocket = io(import.meta.env.VITE_SOCKET_API, { withCredentials: true });
     localSocket.emit("seen", { conversationId: "123", messageId: "345" });
     setSocket(localSocket);
 
