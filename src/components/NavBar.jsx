@@ -1,20 +1,32 @@
-import { useState } from "react";
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function NavBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API}/is-logged-in`, { method: "POST", credentials: "include" })
       .then((res) => res.json())
-      .then((res) => (res.isLoggedIn ? setIsLoggedIn(true) : setIsLoggedIn(false)));
+      .then((res) => {
+        if (res.isLoggedIn) {
+          setIsLoggedIn(true);
+          localStorage.setItem("userId", res.userId);
+          localStorage.setItem("userType", res.userType);
+        } else setIsLoggedIn(false);
+      });
   }, []);
 
   const handleSignOut = async () => {
-    fetch(`${import.meta.env.VITE_API}/sign-out`, { method: "POST", credentials: "include" })
-      .then((res) => res.json())
-      .then((res) => res.success && window.location.reload());
+    fetch(`${import.meta.env.VITE_API}/sign-out`, {
+      method: "POST",
+      credentials: "include",
+    }).then((res) => {
+      if (res.status === 200) {
+        navigate("/");
+        window.location.reload();
+      }
+    });
   };
 
   return (
@@ -26,8 +38,8 @@ function NavBar() {
       {isLoggedIn !== null &&
         (isLoggedIn ? (
           <div>
-            <Link to="/account">
-              <button>Account</button>
+            <Link to="/chat">
+              <button>Chat</button>
             </Link>
             <button onClick={handleSignOut}>Sign Out</button>
           </div>
