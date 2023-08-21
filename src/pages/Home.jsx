@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import NavBar from "../components/NavBar";
+import Shops from "../components/Shops";
 
 function Home() {
   const [api, setApi] = useState("Loading...");
@@ -33,6 +34,11 @@ function Home() {
           <button>Admin</button>
         </Link>
       )}
+      {userType === "Shop" && (
+        <Link to="/shop">
+          <button>Shop</button>
+        </Link>
+      )}
 
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex" }}>
@@ -45,6 +51,7 @@ function Home() {
           <img src="https://img.freepik.com/free-vector/yellow-mango-with-leaf-cartoon-sticker_1308-92449.jpg?w=2000" height="150" alt="mango" />
         </div>
       </div>
+      <Shops />
     </>
   );
 }

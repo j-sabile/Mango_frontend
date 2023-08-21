@@ -45,7 +45,12 @@ function AddShopOwner({ show, onHide, refresh }) {
         phoneNumber: phoneNumber,
         sched: [{}, {}, {}, {}, {}, {}, {}],
       }),
-    }).then((res) => res.status === 201 && refresh() && onHide());
+    })
+      .then((res) => {
+        if (res.status === 201) refresh() && onHide();
+        else return res.json();
+      })
+      .then((res) => console.log(res));
   };
 
   return (
