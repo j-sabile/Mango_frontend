@@ -11,7 +11,14 @@ function Shops() {
       .then((res) => setShops(res.request));
   }, []);
 
-  useEffect(() => console.log("shops:", shops), [shops]);
+  const handleChat = async (shopId) => {
+    fetch(`${import.meta.env.VITE_API}/conversations`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ shop: shopId }),
+    }).then(() => navigate("/chat"));
+  };
 
   return (
     <>
@@ -22,7 +29,7 @@ function Shops() {
           <div key={index} style={{ border: "1px solid black", padding: "1rem", width: "25rem" }}>
             <h6>{shop.name}</h6>
             <p>{shop.pin_address}</p>
-            <button onClick={() => navigate("/chat")}>Chat</button>
+            <button onClick={() => handleChat(shop._id)}>Chat</button>
           </div>
         ))}
       </div>
