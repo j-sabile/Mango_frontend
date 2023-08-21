@@ -11,7 +11,6 @@ import CreateOrder from "./pages/Customer/CreateOrder_customer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import HomeShop from "./pages/Shop/Home_shop";
 import Chat from "./pages/Chat";
-import Test from "./pages/Test";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
