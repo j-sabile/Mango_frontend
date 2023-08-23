@@ -37,12 +37,15 @@ function Chat() {
     if (selectedChatId !== null) {
       const found = conversations?.find((i) => i._id === selectedChatId);
       if (found === undefined) return setSelectedChat(null);
-      setSelectedChat(found);
-      clearInterval(sendTypingInterval);
-      setSendTypingIntervalRunning(false);
+      setSelectedChat(found);stopSendingTyping()
       setMessage("");
     }
   }, [selectedChatId, conversations]);
+
+  useEffect(() => {
+    setMessage("");
+    stopSendingTyping();
+  }, [selectedChatId]);
 
   const addMessageToConversation = (conversationId, message, removeInSending) => {
     const temp = [...conversationsRef.current];
@@ -89,7 +92,6 @@ function Chat() {
     for (let i = 0; i < temp.length; i++) {
       if (temp[i]._id === conversationId) {
         temp[i].isTyping = false;
-        clearInterval(sendTypingInterval);
         break;
       }
     }
@@ -112,8 +114,7 @@ function Chat() {
     if (message === "") return;
     addSending();
     socket.emit("stop_typing", { conversationId: selectedChatId });
-    clearInterval(sendTypingInterval);
-    setSendTypingIntervalRunning(false);
+    stopSendingTyping();
   };
 
   const addSending = () => {
@@ -138,8 +139,7 @@ function Chat() {
     setMessage(e.target.value);
     if (e.target.value === "") {
       socket.emit("stop_typing", { conversationId: selectedChatId });
-      clearInterval(sendTypingInterval);
-      setSendTypingIntervalRunning(false);
+      stopSendingTyping();
     } else if (sendTypingIntervalRunning === false) {
       sendTyping();
       setSendingTypeInterval(setInterval(sendTyping, 5000));
@@ -147,6 +147,11 @@ function Chat() {
     }
   };
   const sendTyping = () => socket.emit("start_typing", { conversationId: selectedChatId });
+  
+  const stopSendingTyping = () => {
+    clearInterval(sendTypingInterval);
+    setSendTypingIntervalRunning(false);
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
