@@ -12,6 +12,7 @@ function Chat() {
   const [sendTypingInterval, setSendingTypeInterval] = useState(null);
   const [sendTypingIntervalRunning, setSendTypingIntervalRunning] = useState(false);
   const conversationsRef = useRef(conversations);
+  const scrollableRef = useRef(null);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API}/conversations`, { method: "GET", credentials: "include" })
@@ -31,21 +32,36 @@ function Chat() {
     localSocket.on("ack_message", ({ doc, conversationId }) => addMessageToConversation(conversationId, doc, true));
     localSocket.on("start_typing", receiveStartTyping);
     localSocket.on("stop_typing", receiveStopTyping);
+    localSocket.on("seen", onSeen);
+    localSocket.on("received", onReceived);
   }, []);
 
   useEffect(() => {
     if (selectedChatId !== null) {
       const found = conversations?.find((i) => i._id === selectedChatId);
       if (found === undefined) return setSelectedChat(null);
-      setSelectedChat(found);stopSendingTyping()
+      setSelectedChat(found);
+      stopSendingTyping();
       setMessage("");
+      if (scrollableRef.current !== null) scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
     }
   }, [selectedChatId, conversations]);
+
+  useEffect(() => {
+    if (scrollableRef.current !== null) scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
+  }, [selectedChat]);
 
   useEffect(() => {
     setMessage("");
     stopSendingTyping();
   }, [selectedChatId]);
+
+  const onSeen = ({ conversationId, date }) => {
+    console.log(conversationId, date);
+  };
+  const onReceived = ({ conversationId, date }) => {
+    console.log(conversationId, date);
+  };
 
   const addMessageToConversation = (conversationId, message, removeInSending) => {
     const temp = [...conversationsRef.current];
@@ -135,6 +151,17 @@ function Chat() {
     setMessage("");
   };
 
+  const handleSeen = (e) => {
+    e.preventDefault();
+    console.log("Emit seen");
+    socket.emit("seen", { conversationId: selectedChatId });
+  };
+  const handleReceived = (e) => {
+    e.preventDefault();
+    console.log("Emit received");
+    socket.emit("received", { conversationId: selectedChatId });
+  };
+
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
     if (e.target.value === "") {
@@ -147,14 +174,14 @@ function Chat() {
     }
   };
   const sendTyping = () => socket.emit("start_typing", { conversationId: selectedChatId });
-  
+
   const stopSendingTyping = () => {
     clearInterval(sendTypingInterval);
     setSendTypingIntervalRunning(false);
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
       <NavBar />
       <h3>Chat</h3>
       <div style={{ display: "flex", flexGrow: "1" }}>
@@ -169,59 +196,61 @@ function Chat() {
             </div>
           ))}
         </div>
-        {selectedChat !== null && (
-          <div style={{ flex: 1, border: "1px solid black", padding: "0.5rem", display: "flex", flexDirection: "column" }}>
-            {/* HEADER */}
-            <div>
-              <h5>
-                {userType === "Shop" && `${selectedChat.customer.first_name} ${selectedChat.customer.last_name}`}
-                {userType === "Customer" && selectedChat.shop.name}
-              </h5>
-            </div>
-
-            {/* ALL MESSAGES */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.20rem", overflowY: "scroll", flexGrow: "1", height: "1px", padding: "1rem 0rem" }}>
-              {/* MESSAGES */}
-              {selectedChat.messages.map((chat, index) => (
-                <div key={index}>
-                  {chat?.sender === userType ? (
-                    <div style={{ display: "flex", justifyContent: "end" }}>
-                      <div style={{ border: "1px solid black", padding: "0rem 0.75rem", marginLeft: "4rem", borderRadius: "20px" }}>{chat.message}</div>
-                    </div>
-                  ) : (
-                    <div style={{ display: "flex", justifyContent: "start", gap: "0.5rem" }}>
-                      {displayProfilePicture(index)}
-                      <div style={{ border: "1px solid black", padding: "0rem 0.75rem", marginRight: "4rem", borderRadius: "20px" }}>{chat.message}</div>
-                    </div>
-                  )}
-                </div>
-              ))}
-              {/* SENDING MESSAGES */}
-              {selectedChat.sending.length > 0 && (
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.20rem", marginTop: "0.5rem" }}>
-                  {selectedChat.sending.map((message, index) => (
-                    <div key={index} style={{ display: "flex", justifyContent: "end" }}>
-                      <div style={{ border: "1px solid", borderColor: "#555555", padding: "0rem 0.75rem", marginLeft: "4rem", color: "#555555", borderRadius: "20px" }}>{message}</div>
-                    </div>
-                  ))}
-                  <div style={{ display: "flex", justifyContent: "end" }}>
-                    <div style={{ fontSize: "14px", color: "#333333" }}>Sending...</div>
-                  </div>
-                </div>
-              )}
-              {/* TYPING... */}
-              {selectedChat.isTyping && <div style={{ color: "#555555" }}>Typing...</div>}
-            </div>
-
-            {/* MESSAGE BOX */}
-            <form style={{ display: "flex" }}>
-              <input type="text" placeholder="Enter a message" value={message} onChange={handleMessageChange} style={{ flex: 1 }} />
-              <button type="submit" onClick={handleSend}>
-                Send
-              </button>
-            </form>
+        {/* {selectedChat !== null && ( */}
+        <div style={{ flex: 1, border: "1px solid black", padding: "0.5rem", display: "flex", flexDirection: "column" }}>
+          {/* HEADER */}
+          <div>
+            <h5>
+              {userType === "Shop" && selectedChat !== null && `${selectedChat?.customer?.first_name} ${selectedChat?.customer.last_name}`}
+              {userType === "Customer" && selectedChat !== null && selectedChat?.shop.name}
+            </h5>
           </div>
-        )}
+
+          {/* ALL MESSAGES */}
+          <div ref={scrollableRef} style={{ display: "flex", flexDirection: "column", gap: "0.20rem", overflowY: "scroll", flexGrow: "1", height: "1px", padding: "1rem 0rem" }}>
+            {/* MESSAGES */}
+            {selectedChat?.messages.map((chat, index) => (
+              <div key={index}>
+                {chat?.sender === userType ? (
+                  <div style={{ display: "flex", justifyContent: "end" }}>
+                    <div style={{ border: "1px solid black", padding: "0rem 0.75rem", marginLeft: "4rem", borderRadius: "20px" }}>{chat.message}</div>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", justifyContent: "start", gap: "0.5rem" }}>
+                    {displayProfilePicture(index)}
+                    <div style={{ border: "1px solid black", padding: "0rem 0.75rem", marginRight: "4rem", borderRadius: "20px" }}>{chat.message}</div>
+                  </div>
+                )}
+              </div>
+            ))}
+            {/* SENDING MESSAGES */}
+            {selectedChat?.sending.length > 0 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.20rem", marginTop: "0.5rem" }}>
+                {selectedChat.sending.map((message, index) => (
+                  <div key={index} style={{ display: "flex", justifyContent: "end" }}>
+                    <div style={{ border: "1px solid", borderColor: "#555555", padding: "0rem 0.75rem", marginLeft: "4rem", color: "#555555", borderRadius: "20px" }}>{message}</div>
+                  </div>
+                ))}
+                <div style={{ display: "flex", justifyContent: "end" }}>
+                  <div style={{ fontSize: "14px", color: "#333333" }}>Sending...</div>
+                </div>
+              </div>
+            )}
+            {/* TYPING... */}
+            {selectedChat?.isTyping && <div style={{ color: "#555555" }}>Typing...</div>}
+          </div>
+
+          {/* MESSAGE BOX */}
+          <form style={{ display: "flex" }}>
+            <input type="text" placeholder="Enter a message" value={message} onChange={handleMessageChange} style={{ flex: 1 }} />
+            <button type="submit" onClick={handleSend}>
+              Send
+            </button>
+            <button onClick={handleSeen}>Seen</button>
+            <button onClick={handleReceived}>Received</button>
+          </form>
+        </div>
+        {/* )} */}
       </div>
     </div>
   );
