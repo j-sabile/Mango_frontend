@@ -39,6 +39,11 @@ function Chat() {
     localSocket.on("stop_typing", receiveStopTyping);
     localSocket.on("seen", onSeen);
     localSocket.on("received", onReceived);
+
+    return () => {
+      setSelectedChatId(null);
+      selectedChatIdRef.current = null;
+    };
   }, []);
 
   useEffect(() => {
