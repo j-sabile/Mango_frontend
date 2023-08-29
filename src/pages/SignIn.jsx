@@ -33,7 +33,7 @@ function SignIn() {
     <>
       <NavBar />
       <form>
-        <input type="email" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input type="email" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus />
         <input type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <button type="submit" onClick={handleSignIn}>
           Sign In
