@@ -33,7 +33,7 @@ function CreateOrder() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         shopId: addOrder.shopId,
-        orderItems: [{ amount: addOrder.amount, size: addOrder.size }],
+        orderItems: [{ amount: addOrder.amount, size: addOrder.size, free_addon: addOrder.freeAddon || undefined }],
         payment: addOrder.payment,
       }),
     });

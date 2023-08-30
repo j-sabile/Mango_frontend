@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function NavBar() {
+  const [userType, setUserType] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const navigate = useNavigate();
 
@@ -13,6 +14,7 @@ function NavBar() {
           setIsLoggedIn(true);
           localStorage.setItem("userId", res.userId);
           localStorage.setItem("userType", res.userType);
+          setUserType(res.userType);
         } else setIsLoggedIn(false);
       });
   }, []);
@@ -38,6 +40,16 @@ function NavBar() {
       {isLoggedIn !== null &&
         (isLoggedIn ? (
           <div>
+            {userType === "Customer" && (
+              <Link to="/my-orders">
+                <button>My Orders</button>
+              </Link>
+            )}
+            {userType === "Shop" && (
+              <Link to="/orders">
+                <button>Orders</button>
+              </Link>
+            )}
             <Link to="/chat">
               <button>Chat</button>
             </Link>
