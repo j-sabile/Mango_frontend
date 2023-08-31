@@ -112,72 +112,72 @@ function Orders() {
   }, [selectedNav, cancelledOrders]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
+    <div className="d-flex flex-column overflow-hidden" style={{ height: "100vh" }}>
       <NavBar />
-      <h4>Orders</h4>
-      <div style={{ display: "flex", flexDirection: "column", gap: "1rem", flexGrow: "1" }}>
-        {/* NAVIGATION TILES */}
-        <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap" }}>
-          {navOptions.map((nav, index) => (
-            <div
-              style={{
-                flex: 1,
-                textAlign: "center",
-                borderBottom: selectedNav.name === nav.name ? "2px solid black" : "",
-                fontWeight: selectedNav.name === nav.name ? "500" : "400",
-                padding: "0.5rem 1rem",
-                cursor: "pointer",
-              }}
-              tabIndex="0"
-              key={index}
-              onClick={() => handleSelectNav(nav)}
-              onKeyDown={(e) => e.key === "Enter" && handleSelectNav(nav)}>
-              {nav.name}
-            </div>
-          ))}
-        </div>
+      <section className="container d-flex flex-column flex-fill py-3 py-sm-5">
+        <h3>Orders</h3>
+        <div className="d-flex flex-column gap-3 flex-fill">
+          {/* NAVIGATION TILES */}
+          <div className="d-flex justify-content-between align-items-center flex-wrap">
+            {navOptions.map((nav, index) => (
+              <div
+                className="flex-fill text-center py-2 px-3"
+                style={{
+                  borderBottom: selectedNav.name === nav.name ? "2px solid black" : "",
+                  fontWeight: selectedNav.name === nav.name ? "500" : "400",
+                  cursor: "pointer",
+                }}
+                tabIndex="0"
+                key={index}
+                onClick={() => handleSelectNav(nav)}
+                onKeyDown={(e) => e.key === "Enter" && handleSelectNav(nav)}>
+                {nav.name}
+              </div>
+            ))}
+          </div>
 
-        {/* NAVIGATION BODY */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem", padding: "0.5rem", overflowY: "scroll", height: "1px", flexGrow: "1" }}>
-          {myOrders.map((order, index) => (
-            <div key={index} style={{ border: "1px solid black", padding: "1rem 1.5rem", display: "flex", flexDirection: "column", borderRadius: "0.5rem" }}>
-              <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ fontSize: "12pt", fontWeight: "500" }}>{`${order.customer.first_name} ${order.customer.last_name}`}</div>
+          {/* NAVIGATION BODY */}
+          <div className="d-flex flex-column gap-3 px-0 px-sm-5 flex-fill" style={{ overflowY: "scroll", height: "1px" }}>
+            {myOrders.map((order, index) => (
+              <div className="d-flex flex-column card px-4 py-3" key={index}>
+                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ fontSize: "12pt", fontWeight: "500" }}>{`${order.customer.first_name} ${order.customer.last_name}`}</div>
 
-                {/* DROPDOWN */}
-                {selectedNav.dropdown && (
-                  <div className="dropdown">
-                    <button className="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" />
-                    <div className="dropdown-menu">
-                      {selectedNav.dropdown.map((option, index) => (
-                        <button className="dropdown-item btn" onClick={() => option.onClick(order._id, selectedNav.name)} key={index}>
-                          {option.name}
-                        </button>
-                      ))}
+                  {/* DROPDOWN */}
+                  {selectedNav.dropdown && (
+                    <div className="dropdown">
+                      <button className="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" />
+                      <div className="dropdown-menu">
+                        {selectedNav.dropdown.map((option, index) => (
+                          <button className="dropdown-item btn" onClick={() => option.onClick(order._id, selectedNav.name)} key={index}>
+                            {option.name}
+                          </button>
+                        ))}
+                      </div>
                     </div>
+                  )}
+                </div>
+                <hr />
+                {order.order_items.map((orderItem, index2) => (
+                  <div className="d-flex justify-content-between my-1 px-2" key={index2}>
+                    <div>{`${orderItem.amount}x ${orderItem.size} ${orderItem.free_addon || ""}${orderItem.addons ? `,  Addons: ${orderItem.addons.join(", ")}` : ""}`}</div>
+                    <div>{`₱${orderItem.subtotal}`}</div>
                   </div>
-                )}
-              </div>
-              <hr />
-              {order.order_items.map((orderItem, index2) => (
-                <div style={{ display: "flex", justifyContent: "space-between", margin: "0.25rem 0rem", gap: "1rem" }} key={index2}>
-                  <div>{`${orderItem.amount}x ${orderItem.size} ${orderItem.free_addon || ""}${orderItem.addons ? `,  Addons: ${orderItem.addons.join(", ")}` : ""}`}</div>
-                  <div>{`₱${orderItem.subtotal}`}</div>
-                </div>
-              ))}
-              <hr />
+                ))}
+                <hr />
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ fontSize: "10pt" }}>{new Date(order.order_date).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</div>
-                <div style={{ textAlign: "end" }}>
-                  <span style={{ fontSize: "13pt" }}>Order Total: </span>
-                  <span style={{ fontSize: "15pt", fontWeight: "500" }}>{`₱${order.total}`}</span>
+                <div className="d-flex justify-content-between align-items-center">
+                  <div style={{ fontSize: "10pt" }}>{new Date(order.order_date).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</div>
+                  <div className="text-end">
+                    <span style={{ fontSize: "13pt" }}>Order Total: </span>
+                    <span style={{ fontSize: "15pt", fontWeight: "500" }}>{`₱${order.total}`}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
