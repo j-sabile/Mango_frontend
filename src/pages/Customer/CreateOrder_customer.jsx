@@ -3,7 +3,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bo
 import NavBar from "../../components/NavBar";
 
 const sizes = ["Small", "Medium", "Large"];
-const freeAddon = ["Nata", "Pearl", "Fruit Jelly"];
+
 const paymentMethods = ["GCash", "Cash On Delivery"];
 
 function CreateOrder() {
@@ -12,7 +12,13 @@ function CreateOrder() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [showOrderSuccess, setShowOrderSuccess] = useState(false);
   const [checkoutInfo, setCheckoutInfo] = useState(null);
-  const [addOrder, setAddOrder] = useState({ shopId: null, amount: 1, size: null, freeAddon: null, addons: [], payment: "" });
+  const [addOrder, setAddOrder] = useState({ shopId: null, amount: 1, size: null, freeAddon: null, nata: 0, pearl: 0, fruitJelly: 0, payment: "" });
+
+  const freeAddon = [
+    { name: "Nata", src: "nata.png", onClick: (e) => setAddOrder({ ...addOrder, nata: addOrder.nata + e }), value: addOrder.nata },
+    { name: "Pearl", src: "pearl.png", onClick: (e) => setAddOrder({ ...addOrder, pearl: addOrder.pearl + e }), value: addOrder.pearl },
+    { name: "Fruit Jelly", src: "fruitJelly.png", onClick: (e) => setAddOrder({ ...addOrder, fruitJelly: addOrder.fruitJelly + e }), value: addOrder.fruitJelly },
+  ];
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API}/is-logged-in`, { method: "POST", credentials: "include" })
@@ -27,13 +33,20 @@ function CreateOrder() {
   }, []);
 
   const handlePlaceOrder = async () => {
+    let test = [];
+    if (addOrder.nata === 0 && addOrder.pearl === 0 && addOrder.fruitJelly === 0) test = undefined;
+    else {
+      for (let i = 0; i < addOrder.nata; i++) test.push("Nata");
+      for (let i = 0; i < addOrder.pearl; i++) test.push("Pearl");
+      for (let i = 0; i < addOrder.fruitJelly; i++) test.push("Fruit Jelly");
+    }
     const response = await fetch(`${import.meta.env.VITE_API}/orders`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         shopId: addOrder.shopId,
-        orderItems: [{ amount: addOrder.amount, size: addOrder.size, free_addon: addOrder.freeAddon || undefined }],
+        orderItems: [{ amount: addOrder.amount, size: addOrder.size, free_addon: addOrder.freeAddon || undefined, addons: test }],
         payment: addOrder.payment,
       }),
     });
@@ -45,13 +58,20 @@ function CreateOrder() {
   };
 
   const handleBuyNow = async () => {
+    let test = [];
+    if (addOrder.nata === 0 && addOrder.pearl === 0 && addOrder.fruitJelly === 0) test = undefined;
+    else {
+      for (let i = 0; i < addOrder.nata; i++) test.push("Nata");
+      for (let i = 0; i < addOrder.pearl; i++) test.push("Pearl");
+      for (let i = 0; i < addOrder.fruitJelly; i++) test.push("Fruit Jelly");
+    }
     const res = await fetch(`${import.meta.env.VITE_API}/orders/compute`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         shopId: addOrder.shopId,
-        orderItems: [{ amount: addOrder.amount, size: addOrder.size, free_addon: addOrder.freeAddon ?? undefined, addons: addOrder.addons }],
+        orderItems: [{ amount: addOrder.amount, size: addOrder.size, free_addon: addOrder.freeAddon ?? undefined, addons: test }],
       }),
     });
     if (res.ok) {
@@ -69,81 +89,130 @@ function CreateOrder() {
   return (
     <>
       <NavBar />
-      <h3>Create Order</h3>
-      <br />
-      <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-        {/* SELECT SHOP */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <h5>Select a shop</h5>
-          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-            {shops.map((shop, index) =>
-              shop.isOpen ? (
-                <div
-                  key={index}
-                  style={{ border: `${shop._id === addOrder.shopId ? "3" : "1"}px solid black`, padding: "1rem", borderRadius: "1rem", cursor: "pointer", display: "flex", flexDirection: "column" }}
-                  onClick={() => setAddOrder({ ...addOrder, shopId: shop._id })}>
-                  <div>
-                    <div style={{ fontWeight: "500" }}>{shop.name}</div>
-                    <div>{shop.address}</div>
-                    <div>{`Distance: ${shop.distance / 1000}km`}</div>
-                    <div>{`Shipping Fee: ₱${shop.shipping_fee}`}</div>
-                  </div>
-                  <div style={{ fontWeight: "500", alignSelf: "end" }}>Open</div>
-                </div>
-              ) : (
-                <div key={index} style={{ border: "1px solid grey", borderRadius: "1rem", padding: "1rem", display: "flex", flexDirection: "column", justifyContent: "space-between", color: "grey" }}>
-                  <div>
-                    <div style={{ fontWeight: "500" }}>{shop.name}</div>
-                    <div>{shop.address}</div>
-                  </div>
-                  <div style={{ fontWeight: "500", alignSelf: "end" }}>Closed</div>
-                </div>
-              )
-            )}
-          </div>
-        </div>
-
-        {/* SELECT SIZE */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <h5>Select a size</h5>
-          <div style={{ display: "flex", gap: "1rem" }}>
-            {sizes.map((size, index) => (
-              <div key={index} style={{ border: `${addOrder.size === size ? "3" : "1"}px solid black`, borderRadius: "1rem", cursor: "pointer", padding: "1rem" }} onClick={() => setAddOrder({ ...addOrder, size: size })}>
-                {size}
+      <section className="d-flex justify-content-center" style={{ minHeight: "100vh", backgroundColor: "#EBEBEB" }}>
+        <div className="d-flex flex-column align-items-center gap-5 py-5 px-1 px-sm-5" style={{ width: "1000px" }}>
+          <h2 className="align-self-center">Create Order</h2>
+          <div className="d-flex flex-column gap-5">
+            {/* SELECT SHOP */}
+            <div className="d-flex flex-column align-items-center gap-1 px-2">
+              <h4>Select a shop</h4>
+              <div className="row g-1">
+                {shops.map(
+                  (shop, index) =>
+                    shop.isOpen && (
+                      <div className="px-1 col-sm-6 col-12" key={index}>
+                        <div
+                          className="card rounded-4 px-5 py-3 justify-content-between h-100"
+                          style={{ border: `${shop._id === addOrder.shopId ? "2" : "0"}px solid #000814`, cursor: "pointer" }}
+                          onClick={() => setAddOrder({ ...addOrder, shopId: shop._id })}>
+                          <div>
+                            <div style={{ fontWeight: "600" }}>{shop.name}</div>
+                            <div>{shop.address}</div>
+                            <div>{`Distance: ${shop.distance / 1000}km`}</div>
+                            <div>{`Shipping Fee: ₱${shop.shipping_fee}`}</div>
+                          </div>
+                          <div style={{ fontWeight: "500", alignSelf: "end" }}>Open</div>
+                        </div>
+                      </div>
+                    )
+                )}
+                {shops.map(
+                  (shop, index) =>
+                    !shop.isOpen && (
+                      <div className="px-1 col-sm-6 col-12" key={index}>
+                        <div className="card border rounded-4 px-5 py-3 justify-content-between text-secondary h-100" style={{ backgroundColor: "#F3F3F3" }}>
+                          <div>
+                            <div className="fw-semibold">{shop.name}</div>
+                            <div>{shop.address}</div>
+                          </div>
+                          <div className="fw-semibold align-self-end">Closed</div>
+                        </div>
+                      </div>
+                    )
+                )}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        {/* SELECT FREE ADDON */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <h5>Select a free addon</h5>
-          <div style={{ display: "flex", gap: "1rem" }}>
-            {freeAddon.map((addon, index) => (
-              <div
-                key={index}
-                style={{ border: `${addOrder.freeAddon === addon ? "3" : "1"}px solid black`, borderRadius: "1rem", cursor: "pointer", padding: "1rem" }}
-                onClick={() => setAddOrder({ ...addOrder, freeAddon: addon })}>
-                {addon}
+            {/* SELECT SIZE */}
+            <div className="d-flex flex-column align-items-center gap-1 px-2">
+              <h4 className="text-center">Select a size</h4>
+              <div className="d-flex gap-2">
+                {sizes.map((size, index) => (
+                  <div
+                    className="card d-flex flex-column align-items-center justify-content-end gap-1 p-2 p-sm-4 rounded-4"
+                    key={index}
+                    style={{ maxWidth: "220px", height: "100%", border: `${addOrder.size === size ? "2" : "0"}px solid #000814`, cursor: "pointer" }}
+                    onClick={() => setAddOrder({ ...addOrder, size: size })}>
+                    <img src="mango_cup.png" style={{ width: `${100 + (index - 2) * 12}%` }} />
+                    <p className="m-0 fw-semibold text-center" style={{ fontSize: "12pt" }}>
+                      {size}
+                    </p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* SELECT FREE ADDON */}
+            <div className="d-flex flex-column align-items-center gap-1 px-2">
+              <h4 className="text-center">Select a free addon</h4>
+              <div className="d-flex gap-2">
+                {freeAddon.map((addon, index) => (
+                  <div
+                    key={index}
+                    className="card d-flex flex-column align-items-center justify-content-center gap-1 p-3 p-sm-5 rounded-4"
+                    style={{ flex: 1, maxWidth: "220px", height: "100%", border: `${addOrder.freeAddon === addon.name ? "2" : "0"}px solid #000814`, cursor: "pointer" }}
+                    onClick={() => setAddOrder({ ...addOrder, freeAddon: addon.name })}>
+                    <img src={addon.src} alt={addon.name} style={{ width: "100%" }} />
+
+                    <p className="m-0 fw-semibold text-center" style={{ fontSize: "12pt" }}>
+                      {addon.name}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="d-flex flex-column align-items-center gap-1 px-2">
+              <h4 className="text-center">{"Add another addon (optional)"}</h4>
+              <div className="d-flex gap-2">
+                {freeAddon.map((addon, index) => (
+                  <div key={index} className="card d-flex flex-column align-items-center justify-content-end gap-1 p-2 pb-3 pt-3 p-sm-5 pb-sm-4 rounded-4" style={{ flex: 1, maxWidth: "220px", height: "100%" }}>
+                    <img src={addon.src} alt={addon.name} style={{ width: "100%" }} />
+                    <p className="m-0 fw-semibold text-center" style={{ fontSize: "12pt" }}>
+                      {addon.name}
+                    </p>
+                    <div className="d-flex align-items-center gap-1 justify-content-center">
+                      <button className="btn px-2 px-sm-2 fw-semibold" style={{ backgroundColor: "#FFD60A", color: "#000814", border: "0px" }} onClick={() => addon.value > 0 && addon.onClick(-1)}>
+                        -
+                      </button>
+                      <label className="py-1 px-1 px-sm-3 rounded-2" style={{ backgroundColor: "#DDDDDD" }}>
+                        {addon.value}
+                      </label>
+                      <button className="btn px-2 px-sm-2 fw-semibold" style={{ backgroundColor: "#FFD60A", color: "#000814", border: "0px" }} onClick={() => addon.value < 2 && addon.onClick(1)}>
+                        +
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* QUANTITY */}
+            <div className="d-flex align-items-center justify-content-center gap-2">
+              <h5 style={{ margin: "0px" }}>Quantity:</h5>
+              <input type="number" className="form-control" min="1" max="15" style={{ width: "60px" }} value={addOrder.amount} onChange={(e) => setAddOrder({ ...addOrder, amount: e.target.value })} />
+            </div>
+
+            {/* ORDER BUTTON  */}
+            <div className="d-flex justify-content-end px-3">
+              {/* <button>Add To Cart</button> */}
+              <button className="btn px-4 fw-semibold" style={{ backgroundColor: "#FFD60A", color: "#000814", border: "0px" }} disabled={statusPreBuyNow()} onClick={handleBuyNow}>
+                Buy Now
+              </button>
+            </div>
           </div>
         </div>
-
-        {/* QUANTITY */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <h5 style={{ margin: "0px" }}>Quantity:</h5>
-          <input type="number" min="1" max="10" style={{ width: "30px" }} value={addOrder.amount} onChange={(e) => setAddOrder({ ...addOrder, amount: e.target.value })} />
-        </div>
-
-        {/* ORDER BUTTON  */}
-        <div>
-          <button>Add To Cart</button>
-          <button disabled={statusPreBuyNow()} onClick={handleBuyNow}>
-            Buy Now
-          </button>
-        </div>
-      </div>
+      </section>
 
       {/* CHECKOUT MODAL */}
       {myAccount && (
@@ -165,16 +234,16 @@ function CreateOrder() {
               <div style={{ display: "flex", gap: "0.5rem" }}>
                 {paymentMethods.map((payment, index) => (
                   <div
+                    className="flex-fill py-3 align-items-center justify-content-center"
                     style={{
                       border: `${addOrder.payment === payment ? "2" : "1"}px solid black`,
-                      padding: "0.75rem 1.5rem",
                       borderRadius: "0.5rem",
                       cursor: "pointer",
                       fontWeight: addOrder.payment === payment ? "500" : "400",
                     }}
                     onClick={() => setAddOrder({ ...addOrder, payment })}
                     key={index}>
-                    {payment}
+                    <p className="m-0 text-center">{payment}</p>
                   </div>
                 ))}
               </div>
@@ -186,7 +255,7 @@ function CreateOrder() {
               {checkoutInfo?.orderItems?.map((order, index) => (
                 <Fragment key={index}>
                   <div className="grid-item">{`${order.amount}x`}</div>
-                  <div className="grid-item">{`${order.size} ${order.free_addon ?? ""}`}</div>
+                  <div className="grid-item">{`${order.size} ${order.free_addon ?? ""}${order.addons ? `, Addons: ${order.addons.join(", ")}` : ""}`}</div>
                   <div className="grid-item">{`₱${order.price}`}</div>
                 </Fragment>
               ))}
@@ -201,7 +270,7 @@ function CreateOrder() {
             </div>
           </ModalBody>
           <ModalFooter>
-            <button onClick={handlePlaceOrder} disabled={!paymentMethods.includes(addOrder.payment)}>
+            <button className="btn px-4 fw-semibold" style={{ backgroundColor: "#FFD60A", color: "#000814", border: "0px" }} onClick={handlePlaceOrder} disabled={!paymentMethods.includes(addOrder.payment)}>
               Place Order
             </button>
           </ModalFooter>
@@ -212,7 +281,9 @@ function CreateOrder() {
       <Modal show={showOrderSuccess} onHide={() => setShowOrderSuccess(false)} centered={true} size="sm">
         <div style={{ padding: "2rem", display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
           <h5>Order success!</h5>
-          <button onClick={() => setShowOrderSuccess(false)}>Continue</button>
+          <button className="btn px-4 fw-semibold" style={{ backgroundColor: "#FFD60A", color: "#000814", border: "0px" }} onClick={() => setShowOrderSuccess(false)}>
+            Continue
+          </button>
         </div>
       </Modal>
     </>
