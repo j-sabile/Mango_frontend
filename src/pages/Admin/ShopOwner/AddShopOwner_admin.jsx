@@ -18,7 +18,7 @@ function AddShopOwner({ show, onHide, refresh }) {
       loader.importLibrary("maps").then(() => {
         const map = new window.google.maps.Map(document.getElementById("map"), {
           center: { lat: 15.2082, lng: 120.6088 },
-          zoom: 15,
+          zoom: 13,
           mapTypeControlOptions: { mapTypeIds: [] },
           streetViewControl: false,
           fullscreenControl: false,
@@ -71,11 +71,7 @@ function AddShopOwner({ show, onHide, refresh }) {
         <br />
         <div style={{ position: "relative", width: "100%" }}>
           <div id="map" style={{ height: "400px", width: "100%", position: "relative" }} />
-          <img
-            src="https://www.nicepng.com/png/detail/295-2955914_red-marker-on-map.png"
-            alt="Marker"
-            style={{ position: "absolute", top: "calc(50% - 20px)", left: "calc(50% - 12px)", height: "20px" }}
-          />
+          <img src="marker.png" alt="marker" style={{ position: "absolute", top: "calc(50% - 20px)", left: "calc(50% - 6px)", height: "20px" }} />
         </div>
         <button onClick={handleAdd}>Add</button>
       </div>

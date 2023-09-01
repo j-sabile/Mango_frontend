@@ -43,7 +43,7 @@ function EditShopOwner({ show, onHide, refresh, shopId }) {
       loader.importLibrary("maps").then(() => {
         const map = new window.google.maps.Map(document.getElementById("map"), {
           center: { lat: shop.pin_address_lat, lng: shop.pin_address_lng },
-          zoom: 15,
+          zoom: 13,
           mapTypeControlOptions: { mapTypeIds: [] },
           streetViewControl: false,
           fullscreenControl: false,
@@ -97,11 +97,7 @@ function EditShopOwner({ show, onHide, refresh, shopId }) {
 
           <div style={{ position: "relative", width: "100%" }}>
             <div id="map" style={{ height: "200px", width: "100%", position: "relative" }} />
-            <img
-              src="https://www.nicepng.com/png/detail/295-2955914_red-marker-on-map.png"
-              alt="Marker"
-              style={{ position: "absolute", top: "calc(50% - 20px)", left: "calc(50% - 12px)", height: "20px" }}
-            />
+            <img src="marker.png" alt="marker" style={{ position: "absolute", top: "calc(50% - 20px)", left: "calc(50% - 6px)", height: "20px" }} />
           </div>
 
           <div>
