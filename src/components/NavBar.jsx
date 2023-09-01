@@ -27,7 +27,10 @@ function NavBar() {
           localStorage.setItem("userId", res.userId);
           localStorage.setItem("userType", res.userType);
           setUserType(res.userType);
-        } else setIsLoggedIn(false);
+        } else {
+          setIsLoggedIn(false);
+          localStorage.clear();
+        }
       });
   }, []);
 

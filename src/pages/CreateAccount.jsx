@@ -6,6 +6,7 @@ import { Modal } from "react-bootstrap";
 
 function CreateAccount() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -18,22 +19,25 @@ function CreateAccount() {
   const [validated, setValidated] = useState(false);
 
   useEffect(() => {
-    const loader = new Loader({
-      apiKey: import.meta.env.VITE_MAPS_API,
-      version: "weekly",
-    });
-
-    loader.importLibrary("maps").then(() => {
-      const map = new window.google.maps.Map(document.getElementById("map"), {
-        center: { lat: 15.2082, lng: 120.6088 },
-        zoom: 15,
-        mapTypeControlOptions: { mapTypeIds: [] },
-        streetViewControl: false,
-        fullscreenControl: false,
-        zoomControl: false,
+    const init = async () => {
+      const res = await fetch(`${import.meta.env.VITE_API}/is-logged-in`, { method: "POST", credentials: "include" });
+      const data = await res.json();
+      if (data.isLoggedIn) navigate("/");
+      else setLoading(false);
+      const loader = new Loader({ apiKey: import.meta.env.VITE_MAPS_API, version: "weekly" });
+      loader.importLibrary("maps").then(() => {
+        const map = new window.google.maps.Map(document.getElementById("map"), {
+          center: { lat: 15.2082, lng: 120.6088 },
+          zoom: 15,
+          mapTypeControlOptions: { mapTypeIds: [] },
+          streetViewControl: false,
+          fullscreenControl: false,
+          zoomControl: false,
+        });
+        setMap(map);
       });
-      setMap(map);
-    });
+    };
+    init();
   }, []);
 
   const handleCreateAccount = (e) => {
@@ -61,6 +65,8 @@ function CreateAccount() {
       setValidated(true);
     }
   };
+
+  if (loading) return;
 
   return (
     <>

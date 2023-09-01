@@ -1,5 +1,6 @@
 import { useState, useEffect, Fragment } from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import NavBar from "../../components/NavBar";
 import ShopCardSkeleton from "../../components/ShopCardSkeleton";
 
@@ -8,6 +9,9 @@ const sizes = ["Small", "Medium", "Large"];
 const paymentMethods = ["GCash", "Cash On Delivery"];
 
 function CreateOrder() {
+  const userType = localStorage.getItem("userType");
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [shops, setShops] = useState([]);
   const [shopsLoading, setShopsLoading] = useState(true);
   const [myAccount, setMyAccount] = useState(null);
@@ -23,14 +27,16 @@ function CreateOrder() {
   ];
 
   useEffect(() => {
+    if (userType !== "Customer") navigate("/");
     fetch(`${import.meta.env.VITE_API}/is-logged-in`, { method: "POST", credentials: "include" })
       .then((res) => res.json())
-      .then((res) => console.log(res));
+      .then((res) => !res.isLoggedIn && navigate("/sign-in"))
+      .finally(() => setLoading(false));
     fetch(`${import.meta.env.VITE_API}/shops/status`, { method: "GET", credentials: "include" })
       .then((res) => res.ok && res.json())
       .then((res) => {
         setShops(res.request);
-        // setShopsLoading(false);
+        setShopsLoading(false);
       });
     fetch(`${import.meta.env.VITE_API}/my-account`, { method: "GET", credentials: "include" })
       .then((res) => res.json())
@@ -90,6 +96,8 @@ function CreateOrder() {
     if (addOrder.shopId === "" || addOrder.shopId === null) return true;
     return false;
   };
+
+  if (loading) return;
 
   return (
     <>

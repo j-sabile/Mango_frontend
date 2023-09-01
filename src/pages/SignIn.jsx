@@ -4,13 +4,18 @@ import NavBar from "../components/NavBar";
 
 function SignIn() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API}/is-logged-in`, { method: "POST", credentials: "include" })
-      .then((res) => res.json())
-      .then((res) => res.isLoggedIn && navigate("/"));
+    const init = async () => {
+      const res = await fetch(`${import.meta.env.VITE_API}/is-logged-in`, { method: "POST", credentials: "include" });
+      const data = await res.json();
+      if (data.isLoggedIn) navigate("/");
+      else setLoading(false);
+    };
+    init();
   }, []);
 
   const handleSignIn = async (e) => {
@@ -28,6 +33,8 @@ function SignIn() {
         else alert("Wrong Credentials");
       });
   };
+
+  if (loading) return;
 
   return (
     <>
