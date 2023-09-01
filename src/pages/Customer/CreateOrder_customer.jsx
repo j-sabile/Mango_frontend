@@ -1,6 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bootstrap";
 import NavBar from "../../components/NavBar";
+import ShopCardSkeleton from "../../components/ShopCardSkeleton";
 
 const sizes = ["Small", "Medium", "Large"];
 
@@ -8,6 +9,7 @@ const paymentMethods = ["GCash", "Cash On Delivery"];
 
 function CreateOrder() {
   const [shops, setShops] = useState([]);
+  const [shopsLoading, setShopsLoading] = useState(true);
   const [myAccount, setMyAccount] = useState(null);
   const [showCheckout, setShowCheckout] = useState(false);
   const [showOrderSuccess, setShowOrderSuccess] = useState(false);
@@ -26,7 +28,10 @@ function CreateOrder() {
       .then((res) => console.log(res));
     fetch(`${import.meta.env.VITE_API}/shops/status`, { method: "GET", credentials: "include" })
       .then((res) => res.ok && res.json())
-      .then((res) => setShops(res.request));
+      .then((res) => {
+        setShops(res.request);
+        // setShopsLoading(false);
+      });
     fetch(`${import.meta.env.VITE_API}/my-account`, { method: "GET", credentials: "include" })
       .then((res) => res.json())
       .then((res) => setMyAccount(res.request));
@@ -96,25 +101,32 @@ function CreateOrder() {
             {/* SELECT SHOP */}
             <div className="d-flex flex-column align-items-center gap-1 px-2">
               <h4>Select a shop</h4>
-              <div className="row g-1">
-                {shops.map(
-                  (shop, index) =>
-                    shop.isOpen && (
-                      <div className="px-1 col-sm-6 col-12" key={index}>
-                        <div
-                          className="card rounded-4 px-5 py-3 justify-content-between h-100"
-                          style={{ border: `${shop._id === addOrder.shopId ? "2" : "0"}px solid #000814`, cursor: "pointer" }}
-                          onClick={() => setAddOrder({ ...addOrder, shopId: shop._id })}>
-                          <div>
-                            <div style={{ fontWeight: "600" }}>{shop.name}</div>
-                            <div>{shop.address}</div>
-                            <div>{`Distance: ${shop.distance / 1000}km`}</div>
-                            <div>{`Shipping Fee: ₱${shop.shipping_fee}`}</div>
+              <div className="row g-1 w-100">
+                {shopsLoading ? (
+                  <Fragment>
+                    <ShopCardSkeleton />
+                    <ShopCardSkeleton />
+                  </Fragment>
+                ) : (
+                  shops.map(
+                    (shop, index) =>
+                      shop.isOpen && (
+                        <div className="px-1 col-sm-6 col-12" key={index}>
+                          <div
+                            className="card rounded-4 px-5 py-3 justify-content-between h-100"
+                            style={{ border: `${shop._id === addOrder.shopId ? "2" : "0"}px solid #000814`, cursor: "pointer" }}
+                            onClick={() => setAddOrder({ ...addOrder, shopId: shop._id })}>
+                            <div>
+                              <div style={{ fontWeight: "600" }}>{shop.name}</div>
+                              <div>{shop.address}</div>
+                              <div>{`Distance: ${shop.distance / 1000}km`}</div>
+                              <div>{`Shipping Fee: ₱${shop.shipping_fee}`}</div>
+                            </div>
+                            <div style={{ fontWeight: "500", alignSelf: "end" }}>Open</div>
                           </div>
-                          <div style={{ fontWeight: "500", alignSelf: "end" }}>Open</div>
                         </div>
-                      </div>
-                    )
+                      )
+                  )
                 )}
                 {shops.map(
                   (shop, index) =>

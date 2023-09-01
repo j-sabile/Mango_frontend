@@ -3,6 +3,23 @@
   margin: 0.25rem 0rem
 }
 
+.skeleton {
+  animation: skeleton-loading 1s linear infinite alternate;
+  margin-bottom: 0.6rem;
+  border-radius: 0.25rem;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: hsl(200, 20%, 80%);
+  }
+  100% {
+    background-color: hsl(200, 20%, 95%);
+  }
+}
+
+
+
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
