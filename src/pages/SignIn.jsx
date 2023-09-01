@@ -58,7 +58,6 @@ function SignIn() {
           </p>
         </div>
       </section>
-      <Link to="/create-account">Create Account</Link>
     </>
   );
 }

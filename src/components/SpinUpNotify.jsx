@@ -21,7 +21,7 @@ function SpinUpNotify() {
       const res = await fetch(`${import.meta.env.VITE_API}/`);
       clearTimeout(timer);
       if (res.ok && showNoResponse) handleResponseReceived();
-      else setShowError(true);
+      else !res.ok && setShowError(true);
     };
     init();
   }, []);

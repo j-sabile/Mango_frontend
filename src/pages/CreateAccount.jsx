@@ -72,36 +72,37 @@ function CreateAccount() {
     <>
       <NavBar />
       <section className="container d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
-        <div className="d-flex flex-column gap-5 py-4" style={{ width: "600px" }}>
+        <div className="d-flex flex-column gap-5 py-4 px-2" style={{ width: "600px" }}>
           <h2 className="align-self-center">Create Account</h2>
-          {/* <form className="row g-2 needs-validation "  noValidate> */}
-          <form className={`row g-3 ${validated ? "was-validated" : ""}`} noValidate>
-            <div className="col-sm-6 col-12 my-1">
-              <input type="email" placeholder="Email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <form className={`d-flex flex-column align-items-center ${validated ? "was-validated" : ""}`} noValidate>
+            <div className="row g-3">
+              <div className="col-sm-6 col-12 my-1">
+                <input type="email" placeholder="Email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              </div>
+              <div className="col-sm-6 col-12 my-1">
+                <input type="password" placeholder="Password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              </div>
+              <div className="col-sm-6 col-12 my-1">
+                <input type="text" placeholder="First Name" className="form-control" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                {firstName.length < 3 && <div className="invalid-feedback">First name must be at least 3 characters long.</div>}
+              </div>
+              <div className="col-sm-6 col-12 my-1">
+                <input type="text" placeholder="Last Name" className="form-control" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
+              </div>
+              <div className="col-12 my-1">
+                <input type="text" placeholder="Address" className="form-control" required value={address} onChange={(e) => setAddress(e.target.value)} />
+              </div>
+              <div className="col-12 my-1">
+                <input type="number" placeholder="Phone Number (09XXXXXXXXX)" className="form-control" required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+              </div>
             </div>
-            <div className="col-sm-6 col-12 my-1">
-              <input type="password" placeholder="Password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            </div>
-            <div className="col-sm-6 col-12 my-1">
-              <input type="text" placeholder="First Name" className="form-control" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-              {firstName.length < 3 && <div className="invalid-feedback">First name must be at least 3 characters long.</div>}
-            </div>
-            <div className="col-sm-6 col-12 my-1">
-              <input type="text" placeholder="Last Name" className="form-control" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
-            </div>
-            <div className="col-12 my-1">
-              <input type="text" placeholder="Address" className="form-control" required value={address} onChange={(e) => setAddress(e.target.value)} />
-            </div>
-            <div className="col-12 my-1">
-              <input type="number" placeholder="Phone Number (09XXXXXXXXX)" className="form-control" required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-            </div>
-            <div className="card p-3 mt-3">
+            <div className="card p-3 mt-2 w-100">
               <div style={{ position: "relative", width: "100%", alignSelf: "center" }}>
                 <div id="map" style={{ height: "300px", width: "100%", position: "relative" }} />
                 <img src="https://www.nicepng.com/png/detail/295-2955914_red-marker-on-map.png" alt="Marker" style={{ position: "absolute", top: "calc(50% - 20px)", left: "calc(50% - 12px)", height: "20px" }} />
               </div>
             </div>
-            <button type="submit" onClick={handleCreateAccount} className="btn py-2" style={{ backgroundColor: "#FFD60A", color: "#001D3D", fontWeight: "600", fontSize: "14pt" }}>
+            <button type="submit" onClick={handleCreateAccount} className="btn px-4 my-4" style={{ backgroundColor: "#FFD60A", color: "#001D3D", fontWeight: "600" }}>
               Create Account
             </button>
           </form>
