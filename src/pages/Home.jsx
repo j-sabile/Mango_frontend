@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
+import SpinUpNotify from "../components/SpinUpNotify";
 
 function Home() {
   const navigate = useNavigate();
@@ -22,11 +23,10 @@ function Home() {
               Order Now
             </button>
           </div>
-          <div className="">
-            <img src="https://img.freepik.com/free-vector/yellow-mango-with-leaf-cartoon-sticker_1308-92449.jpg?w=2000" height="350" alt="mango" />
-          </div>
+          <div className="">{/* <img src="https://img.freepik.com/free-vector/yellow-mango-with-leaf-cartoon-sticker_1308-92449.jpg?w=2000" height="350" alt="mango" /> */}</div>
         </div>
       </section>
+      <SpinUpNotify />
     </>
   );
 }
