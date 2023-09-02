@@ -15,7 +15,7 @@ function CreateAccount() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [map, setMap] = useState(null);
   const [logInMessage, setLogInMessage] = useState("");
-  const [showCreateAccountSuccess, setShowCreateAccountSuccess] = useState(true);
+  const [showCreateAccountSuccess, setShowCreateAccountSuccess] = useState(false);
   const [validated, setValidated] = useState(false);
 
   useEffect(() => {

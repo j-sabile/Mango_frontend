@@ -58,7 +58,9 @@ function NavBar() {
                 {account_icon}
               </button>
               <div className="dropdown-menu">
-                <button className="dropdown-item btn text-center">Account</button>
+                <button className="dropdown-item btn text-center" onClick={() => navigate("/my-account")}>
+                  Account
+                </button>
                 <button className="dropdown-item btn text-center" onClick={() => navigate("/chat")}>
                   Chat
                 </button>
