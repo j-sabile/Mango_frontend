@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
+import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bootstrap";
 import { Loader } from "@googlemaps/js-api-loader";
 
 const stocksModel = [
@@ -76,48 +76,50 @@ function EditShopOwner({ show, onHide, refresh, shopId }) {
   return (
     <Modal show={show} onHide={onHide} centered={true} scrollable={true}>
       <ModalHeader closeButton>
-        <ModalTitle>Edit</ModalTitle>
+        <ModalTitle>Edit Shop</ModalTitle>
       </ModalHeader>
-      <ModalBody>
-        <div style={{ padding: "0.5rem 2rem", display: "flex", flexDirection: "column", gap: "0.5rem", height: "75vh" }}>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <div>Status:</div>
-            <div style={{ width: "1rem" }} />
-            <input type="checkbox" checked={forceOpen} onChange={() => setForceOpen(true)} id="open" />
-            <label htmlFor="open">Open</label>
-            <div style={{ width: "0.5rem" }} />
-            <input type="checkbox" checked={!forceOpen} onChange={() => setForceOpen(false)} id="close" />
-            <label htmlFor="close">Close</label>
+      <ModalBody style={{ maxHeight: "50vh" }}>
+        <div className="d-flex flex-column gap-2 p-1 px-sm-4">
+          {/* NAME */}
+          <div className="form-floating">
+            <input type="text" value="Jane Doe Branch" className="form-control" disabled />
+            <label>Name</label>
           </div>
 
-          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-            <label htmlFor="address">Address:</label>
-            <input type="text" placeholder="Address" id="address" required value={address} onChange={(e) => setAddress(e.target.value)} style={{ flex: 1 }} />
+          {/* ADDRESS */}
+          <div className="form-floating">
+            <input type="text" className="form-control" placeholder="Address" id="address" required value={address} onChange={(e) => setAddress(e.target.value)} style={{ flex: 1 }} />
+            <label>Address</label>
           </div>
 
-          <div style={{ position: "relative", width: "100%" }}>
-            <div id="map" style={{ height: "200px", width: "100%", position: "relative" }} />
-            <img src="marker.png" alt="marker" style={{ position: "absolute", top: "calc(50% - 20px)", left: "calc(50% - 6px)", height: "20px" }} />
+          {/* STATUS */}
+          <div className="d-flex align-items-center gap-2">
+            <label>Status:</label>
+            <select className="form-control form-select-sm" value={forceOpen} onChange={(e) => setForceOpen(e.target.value === "true")}>
+              <option value="true">Open</option>
+              <option value="false">Closed</option>
+            </select>
           </div>
 
+          {/* STOCKS */}
           <div>
-            <div>Stocks</div>
-            <ul>
+            <h6>Stocks</h6>
+            <div className="d-flex flex-column gap-1">
               {stocksModel.map((stock, index) => (
-                <li key={index} style={{ listStyle: "none" }}>
-                  <label>{stock[0] + ":"}</label>
+                <div className="d-flex align-items-center gap-1 ms-3" key={index} style={{ listStyle: "none" }}>
+                  <label>{`${stock[0]}:`}</label>
                   <input
                     type="number"
+                    className="form-control"
                     placeholder={stock[0]}
                     value={stocks[stock[1]] || 0}
-                    // prettier-ignore
                     onChange={(e) => setStocks((prevStocks) => ({ ...prevStocks, [stock[1]]: e.target.value }))}
                     min="0"
                     max="999"
                   />
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
 
           <div>
@@ -125,19 +127,33 @@ function EditShopOwner({ show, onHide, refresh, shopId }) {
             <ul>
               {days.map((day, index) => (
                 <li key={index}>
-                  <div style={{ display: "flex", gap: "0.5rem" }}>
+                  <div className="d-flex align-items-center gap-2">
                     {`${day}:`}
-                    <input type="time" value={new Date(sched[0].open).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })} />
+                    <input className="form-control" type="time" value={new Date(sched[0].open).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })} />
                     to
-                    <input type="time" value={new Date(sched[0].close).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })} />
+                    <input className="form-control" type="time" value={new Date(sched[0].close).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })} />
                   </div>
                 </li>
               ))}
             </ul>
           </div>
-          <button onClick={handleSave}>Save</button>
+
+          <div className="card p-3 mt-2 w-100">
+            <div style={{ position: "relative", width: "100%", alignSelf: "center" }}>
+              <div id="map" style={{ height: "300px", width: "100%", position: "relative" }} />
+              <img src="marker.png" alt="marker" style={{ position: "absolute", top: "calc(50% - 20px)", left: "calc(50% - 6px)", height: "20px" }} />
+            </div>
+          </div>
         </div>
       </ModalBody>
+      <ModalFooter>
+        <button className="btn-cncl fw-semibold rounded-2 py-2 px-4" onClick={onHide}>
+          Cancel
+        </button>
+        <button className="btn-1 fw-semibold rounded-2 py-2 px-4" onClick={handleSave}>
+          Save
+        </button>
+      </ModalFooter>
     </Modal>
   );
 }
