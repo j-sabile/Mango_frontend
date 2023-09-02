@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bootstrap";
 import { Loader } from "@googlemaps/js-api-loader";
 
 const stocksModel = [
-  ["Nata", "stock_nata"],
-  ["Pearl", "stock_pearl"],
-  ["Fruit Jelly", "stock_fruitjelly"],
   ["Small", "stock_small"],
+  ["Nata", "stock_nata"],
   ["Medium", "stock_medium"],
+  ["Pearl", "stock_pearl"],
   ["Large", "stock_large"],
+  ["Fruit Jelly", "stock_fruitjelly"],
 ];
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Sunday"];
 
@@ -73,6 +73,8 @@ function EditShopOwner({ show, onHide, refresh, shopId }) {
     }).then((res) => res.status === 200 && refresh() && onHide());
   };
 
+  if (!shop) return;
+
   return (
     <Modal show={show} onHide={onHide} centered={true} scrollable={true}>
       <ModalHeader closeButton>
@@ -80,49 +82,53 @@ function EditShopOwner({ show, onHide, refresh, shopId }) {
       </ModalHeader>
       <ModalBody style={{ maxHeight: "50vh" }}>
         <div className="d-flex flex-column gap-2 p-1 px-sm-4">
-          {/* NAME */}
-          <div className="form-floating">
-            <input type="text" value="Jane Doe Branch" className="form-control" disabled />
-            <label>Name</label>
-          </div>
-
-          {/* ADDRESS */}
-          <div className="form-floating">
+          {/* BASIC INFO */}
+          <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "10px" }}>
+            <div className="d-flex align-items-center">
+              <h6>Name:</h6>
+            </div>
+            <input type="text" value={shop.name} className="form-control" disabled />
+            <div className="d-flex align-items-center">
+              <h6>Address:</h6>
+            </div>
             <input type="text" className="form-control" placeholder="Address" id="address" required value={address} onChange={(e) => setAddress(e.target.value)} style={{ flex: 1 }} />
-            <label>Address</label>
-          </div>
-
-          {/* STATUS */}
-          <div className="d-flex align-items-center gap-2">
-            <label>Status:</label>
-            <select className="form-control form-select-sm" value={forceOpen} onChange={(e) => setForceOpen(e.target.value === "true")}>
-              <option value="true">Open</option>
-              <option value="false">Closed</option>
+            <div className="d-flex align-items-center">
+              <h6>Status:</h6>
+            </div>
+            <select className="form-control form-select-sm p-2" value={forceOpen} onChange={(e) => setForceOpen(e.target.value === "true")}>
+              <option className="fs-6" value="true">
+                Open
+              </option>
+              <option className="fs-6" value="false">
+                Closed
+              </option>
             </select>
           </div>
+          <hr />
 
           {/* STOCKS */}
-          <div>
-            <h6>Stocks</h6>
-            <div className="d-flex flex-column gap-1">
-              {stocksModel.map((stock, index) => (
-                <div className="d-flex align-items-center gap-1 ms-3" key={index} style={{ listStyle: "none" }}>
-                  <label>{`${stock[0]}:`}</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    placeholder={stock[0]}
-                    value={stocks[stock[1]] || 0}
-                    onChange={(e) => setStocks((prevStocks) => ({ ...prevStocks, [stock[1]]: e.target.value }))}
-                    min="0"
-                    max="999"
-                  />
+          <div className="row" style={{ display: "grid", gridTemplateColumns: "auto 1fr auto 1fr", gap: "5px" }}>
+            {stocksModel.map((stock, index) => (
+              <Fragment key={index}>
+                <div className="d-flex align-items-center">
+                  <h6>{`${stock[0]}:`}</h6>
                 </div>
-              ))}
-            </div>
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder={stock[0]}
+                  value={stocks[stock[1]] || 0}
+                  onChange={(e) => setStocks((prevStocks) => ({ ...prevStocks, [stock[1]]: e.target.value }))}
+                  min="0"
+                  max="999"
+                />
+              </Fragment>
+            ))}
           </div>
+          <hr />
 
-          <div>
+          {/* SCHEDULE */}
+          {/* <div>
             <div>Schedule</div>
             <ul>
               {days.map((day, index) => (
@@ -137,7 +143,9 @@ function EditShopOwner({ show, onHide, refresh, shopId }) {
               ))}
             </ul>
           </div>
+          <hr /> */}
 
+          {/* MAP */}
           <div className="card p-3 mt-2 w-100">
             <div style={{ position: "relative", width: "100%", alignSelf: "center" }}>
               <div id="map" style={{ height: "300px", width: "100%", position: "relative" }} />
