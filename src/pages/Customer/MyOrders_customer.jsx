@@ -51,51 +51,53 @@ function MyOrders() {
   return (
     <div className="d-flex flex-column overflow-hidden" style={{ height: "100vh" }}>
       <NavBar />
-      <section className="container d-flex flex-column flex-fill py-3 py-sm-5">
-        <h3>My Orders</h3>
+      <section className="d-flex flex-column flex-fill py-3 py-sm-5" style={{ background: "radial-gradient(circle, rgba(252,250,238,1) 35%, rgba(240,229,168,1) 100%)" }}>
+        <div className="container d-flex flex-column flex-fill">
+          <h3>My Orders</h3>
 
-        <div className="d-flex flex-column gap-3 flex-fill">
-          {/* NAVIGATION TILES */}
-          <div className="d-flex justify-content-between align-items-center flex-wrap">
-            {navOptions.map((nav, index) => (
-              <div
-                className="flex-fill text-center py-2 px-3"
-                style={{
-                  borderBottom: selectedNav === nav ? "2px solid black" : "",
-                  fontWeight: selectedNav === nav ? "500" : "400",
-                  cursor: "pointer",
-                }}
-                tabIndex="0"
-                key={index}
-                onClick={() => handleSelectNav(nav)}
-                onKeyDown={(e) => e.key === "Enter" && handleSelectNav(nav)}>
-                {nav}
-              </div>
-            ))}
-          </div>
+          <div className="d-flex flex-column gap-3 flex-fill">
+            {/* NAVIGATION TILES */}
+            <div className="d-flex justify-content-between align-items-center flex-wrap">
+              {navOptions.map((nav, index) => (
+                <div
+                  className="flex-fill text-center py-2 px-3"
+                  style={{
+                    borderBottom: selectedNav === nav ? "2px solid black" : "",
+                    fontWeight: selectedNav === nav ? "500" : "400",
+                    cursor: "pointer",
+                  }}
+                  tabIndex="0"
+                  key={index}
+                  onClick={() => handleSelectNav(nav)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSelectNav(nav)}>
+                  {nav}
+                </div>
+              ))}
+            </div>
 
-          {/* NAVIGATION BODY */}
-          <div className="d-flex flex-column gap-3 px-0 px-sm-5 flex-fill" style={{ overflowY: "scroll", height: "1px" }}>
-            {myOrders.map((order, index) => (
-              <div className="d-flex flex-column card px-4 py-3" key={index}>
-                <div style={{ fontSize: "10pt", fontWeight: "500" }}>{order.shop.name}</div>
-                <hr />
-                {order.order_items.map((orderItem, index2) => (
-                  <div className="d-flex justify-content-between my-1 px-2" key={index2}>
-                    <div>{`${orderItem.amount}x ${orderItem.size} ${orderItem.free_addon || ""}${orderItem.addons ? `, Addons: ${orderItem.addons.join(", ")}` : ""}`}</div>
-                    <div>{`₱${orderItem.subtotal}`}</div>
-                  </div>
-                ))}
-                <hr />
-                <div className="d-flex justify-content-between align-items-center">
-                  <div style={{ fontSize: "10pt" }}>{new Date(order.order_date).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</div>
-                  <div className="text-end">
-                    <span style={{ fontSize: "13pt" }}>Order Total: </span>
-                    <span style={{ fontSize: "15pt", fontWeight: "500" }}>{`₱${order.total}`}</span>
+            {/* NAVIGATION BODY */}
+            <div className="d-flex flex-column gap-3 px-0 px-sm-5 py-2 flex-fill" style={{ overflowY: "auto", height: "1px" }}>
+              {myOrders.map((order, index) => (
+                <div className="card d-flex flex-column border-0 rounded-4 px-4 py-3" style={{ boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.2)" }} key={index}>
+                  <div style={{ fontSize: "10pt", fontWeight: "500" }}>{order.shop.name}</div>
+                  <hr />
+                  {order.order_items.map((orderItem, index2) => (
+                    <div className="d-flex justify-content-between my-1 px-2" key={index2}>
+                      <div>{`${orderItem.amount}x ${orderItem.size} ${orderItem.free_addon || ""}${orderItem.addons ? `, Addons: ${orderItem.addons.join(", ")}` : ""}`}</div>
+                      <div>{`₱${orderItem.subtotal}`}</div>
+                    </div>
+                  ))}
+                  <hr />
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div style={{ fontSize: "10pt" }}>{new Date(order.order_date).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</div>
+                    <div className="text-end">
+                      <span style={{ fontSize: "13pt" }}>Order Total: </span>
+                      <span style={{ fontSize: "15pt", fontWeight: "500" }}>{`₱${order.total}`}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>

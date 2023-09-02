@@ -15,7 +15,7 @@ function Home() {
   return (
     <>
       <NavBar />
-      <section className="d-flex justify-content-center" style={{ minHeight: "100vh" }}>
+      <section className="d-flex justify-content-center" style={{ minHeight: "100vh", background: "radial-gradient(circle, rgba(252,250,238,1) 35%, rgba(240,229,168,1) 100%)" }}>
         <div className="container d-flex justify-content-between align-items-center">
           <div className="d-flex flex-column justify-content-center align-items-start">
             <p style={{ fontSize: "36pt", fontWeight: "600", color: "#000814" }}>Fresh Mangoes</p>

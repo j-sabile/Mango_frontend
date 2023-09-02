@@ -74,10 +74,10 @@ function CreateAccount() {
   if (loading) return;
 
   return (
-    <>
+    <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
       <NavBar />
-      <section className="container d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
-        <div className="d-flex flex-column gap-5 py-4 px-2" style={{ width: "600px" }}>
+      <section className="d-flex flex-column justify-content-center flex-fill px-3" style={{ background: "radial-gradient(circle, rgba(252,250,238,1) 35%, rgba(240,229,168,1) 100%)" }}>
+        <div className="card d-flex flex-column py-5 px-3 p-sm-5 border-0 rounded-5 gap-4 m-4 align-self-center" style={{ width: "100%", maxWidth: "600px", boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.2)" }}>
           <h2 className="align-self-center">Create Account</h2>
           <form className={`d-flex flex-column align-items-center `} noValidate>
             <div className="row g-3">
@@ -155,7 +155,7 @@ function CreateAccount() {
             </div>
 
             {/* CREATE ACCOUNT BTN */}
-            <button type="submit" onClick={handleCreateAccount} className="btn px-4 my-4" style={{ backgroundColor: "#FFD60A", color: "#001D3D", fontWeight: "600" }}>
+            <button type="submit" className="btn-1 px-5 py-2 mt-3 rounded-4 fw-semibold" onClick={handleCreateAccount}>
               Create Account
             </button>
           </form>
@@ -167,13 +167,13 @@ function CreateAccount() {
         <div className="d-flex flex-column align-items-center gap-3 p-5">
           <h4 className="text-center">Successfully created account.</h4>
           <div style={{ alignSelf: "center" }}>
-            <button className="btn fw-semibold px-4" style={{ backgroundColor: "#FFD60A", color: "#001D3D" }} onClick={() => navigate("/")}>
+            <button className="btn-1 rounded-4 fw-semibold px-5 py-2" onClick={() => navigate("/")}>
               Continue
             </button>
           </div>
         </div>
       </Modal>
-    </>
+    </div>
   );
 }
 

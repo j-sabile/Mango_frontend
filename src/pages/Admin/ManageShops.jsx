@@ -36,10 +36,10 @@ function ManageShops() {
 
   return (
     <>
-      <div className="d-flex flex-column gap-3 flex-fill">
+      <div className="d-flex flex-column gap-0 flex-fill">
         {/* HEADER */}
-        <div className="d-flex justify-content-between">
-          <h3>Shops</h3>
+        <div className="d-flex justify-content-between align-items-center p-4">
+          <h3 className="m-0">Shops</h3>
           <div className="d-flex gap-3">
             <button className="btn-cncl rounded-3 px-3 py-1 fw-semibold" onClick={loadShops}>
               Reload
@@ -49,6 +49,7 @@ function ManageShops() {
             </button>
           </div>
         </div>
+        <hr className="m-0" />
 
         {/* BODY */}
         <div className="d-flex flex-column gap-2 p-1 p-sm-3 flex-fill" style={{ overflowY: "auto", height: "1px" }}>
