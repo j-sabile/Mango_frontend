@@ -45,12 +45,12 @@ function SignIn() {
           <form className="d-flex flex-column gap-2">
             <input type="email" className="form-control" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus />
             <input type="password" className="form-control" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <button type="submit" className="btn w-100 mt-4" onClick={handleSignIn} style={{ backgroundColor: "#FFD60A", color: "#001D3D", fontWeight: "500", fontSize: "14pt" }}>
+              Sign In
+            </button>
             <a className="align-self-end" href="#">
               Forgot Password
             </a>
-            <button type="submit" className="btn w-100" onClick={handleSignIn} style={{ backgroundColor: "#FFD60A", color: "#001D3D", fontWeight: "500", fontSize: "14pt" }}>
-              Sign In
-            </button>
           </form>
           <p>
             Don't have an account?
