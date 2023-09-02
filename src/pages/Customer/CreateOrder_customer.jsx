@@ -202,13 +202,13 @@ function CreateOrder() {
                       {addon.name}
                     </p>
                     <div className="d-flex align-items-center gap-1 justify-content-center">
-                      <button className="btn px-2 px-sm-2 fw-semibold" style={{ backgroundColor: "#FFD60A", color: "#000814", border: "0px" }} onClick={() => addon.value > 0 && addon.onClick(-1)}>
+                      <button className="btn-1 rounded-2 px-2 px-sm-2 fw-semibold" onClick={() => addon.value > 0 && addon.onClick(-1)}>
                         -
                       </button>
                       <label className="py-1 px-1 px-sm-3 rounded-2" style={{ backgroundColor: "#DDDDDD" }}>
                         {addon.value}
                       </label>
-                      <button className="btn px-2 px-sm-2 fw-semibold" style={{ backgroundColor: "#FFD60A", color: "#000814", border: "0px" }} onClick={() => addon.value < 2 && addon.onClick(1)}>
+                      <button className="btn-1 rounded-2 px-2 px-sm-2 fw-semibold" onClick={() => addon.value < 2 && addon.onClick(1)}>
                         +
                       </button>
                     </div>
@@ -226,7 +226,7 @@ function CreateOrder() {
             {/* ORDER BUTTON  */}
             <div className="d-flex justify-content-end px-3">
               {/* <button>Add To Cart</button> */}
-              <button className="btn px-4 fw-semibold" style={{ backgroundColor: "#FFD60A", color: "#000814", border: "0px" }} disabled={statusPreBuyNow()} onClick={handleBuyNow}>
+              <button className="btn-1 px-4 py-2 rounded-3 fw-semibold" disabled={statusPreBuyNow()} onClick={handleBuyNow}>
                 Buy Now
               </button>
             </div>
@@ -290,7 +290,7 @@ function CreateOrder() {
             </div>
           </ModalBody>
           <ModalFooter>
-            <button className="btn px-4 fw-semibold" style={{ backgroundColor: "#FFD60A", color: "#000814", border: "0px" }} onClick={handlePlaceOrder} disabled={!paymentMethods.includes(addOrder.payment)}>
+            <button className="btn-1 px-4 py-2 rounded-3 fw-semibold" onClick={handlePlaceOrder} disabled={!paymentMethods.includes(addOrder.payment)}>
               Place Order
             </button>
           </ModalFooter>
@@ -298,10 +298,10 @@ function CreateOrder() {
       )}
 
       {/* ORDER SUCCESS MODAL */}
-      <Modal show={showOrderSuccess} onHide={() => setShowOrderSuccess(false)} centered={true} size="sm">
-        <div style={{ padding: "2rem", display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
-          <h5>Order success!</h5>
-          <button className="btn px-4 fw-semibold" style={{ backgroundColor: "#FFD60A", color: "#000814", border: "0px" }} onClick={() => setShowOrderSuccess(false)}>
+      <Modal show={showOrderSuccess} onHide={() => setShowOrderSuccess(false)} centered={true}>
+        <div className="d-flex flex-column align-items-center gap-4" style={{ padding: "3rem 4rem" }}>
+          <h3 className="text-center">Order success!</h3>
+          <button className="btn-1 px-4 py-2 rounded-2 fw-semibold" onClick={() => setShowOrderSuccess(false)}>
             Continue
           </button>
         </div>
