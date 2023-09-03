@@ -1,5 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 import NavBar from "../../components/NavBar";
+import { Modal } from "react-bootstrap";
+import EditMyAccountModal from "../../components/Modals/Shop/EditMyAccountModal";
 
 const stocksModel = [
   ["Small", "stock_small"],
@@ -11,29 +13,37 @@ const stocksModel = [
 ];
 function MyAccountShop() {
   const [myAccount, setMyAccount] = useState(null);
+  const [showEdit, setShowEdit] = useState(false);
+
   useEffect(() => {
+    loadMyAccount();
+  }, []);
+
+  const loadMyAccount = async () => {
     fetch(`${import.meta.env.VITE_API}/my-account`, { method: "GET", credentials: "include" })
       .then((res) => res.json())
       .then((res) => setMyAccount(res.request));
-  }, []);
+  };
 
   useEffect(() => console.log("myAccount:", myAccount), [myAccount]);
 
   return (
     <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
       <NavBar />
-      <section className="d-flex justify-content-center px-3 py-4 p-sm-5 flex-fill" style={{ background: "radial-gradient(circle, rgba(252,250,238,1) 35%, rgba(240,229,168,1) 100%)" }}>
+      <section className="d-flex justify-content-center px-2 py-3 p-sm-5 flex-fill" style={{ background: "radial-gradient(circle, rgba(252,250,238,1) 35%, rgba(240,229,168,1) 100%)" }}>
         <div className="d-flex flex-column" style={{ width: "700px" }}>
           {/* HEADER */}
           <div className="d-flex justify-content-between align-items-center px-4">
             <h1 className="fw-normal m-0">My Account</h1>
-            <button className="btn-cncl px-4 py-2 rounded-3">Edit</button>
+            <button className="btn-cncl px-4 py-2 rounded-3" onClick={() => setShowEdit(true)}>
+              Edit
+            </button>
           </div>
           <hr className="my-2" />
 
           {/* ACCOUNT INFO */}
           <div className="d-flex flex-column gap-3 p-2 p-sm-4">
-            <div className="card rounded-4 p-5 px-sm-5 border-0" style={{ boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.2)" }}>
+            <div className="card rounded-4 p-4 px-sm-5 border-0" style={{ boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.2)" }}>
               {/* BASIC INFO */}
               <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "5px" }}>
                 <div className="fw-semibold me-2">Name:</div>
@@ -71,6 +81,7 @@ function MyAccountShop() {
           </div>
         </div>
       </section>
+      <EditMyAccountModal show={showEdit} shop={myAccount} onHide={() => setShowEdit(false)} refresh={loadMyAccount} />
     </div>
   );
 }
