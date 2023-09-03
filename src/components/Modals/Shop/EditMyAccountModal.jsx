@@ -1,5 +1,4 @@
-import { Fragment, useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { Modal } from "react-bootstrap";
 
 function EditMyAccountModal({ show, onHide, refresh, shop }) {
@@ -36,7 +35,7 @@ function EditMyAccountModal({ show, onHide, refresh, shop }) {
   }, [shop]);
 
   const handleSave = async () => {
-    fetch(`${import.meta.env.VITE_API}/my-account`, {
+    const res = await fetch(`${import.meta.env.VITE_API}/my-account`, {
       method: "PATCH",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -50,12 +49,10 @@ function EditMyAccountModal({ show, onHide, refresh, shop }) {
         stock_pearl: pearl,
         stock_fruitjelly: fruitJelly,
       }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        refresh();
-        onHide();
-      });
+    });
+    onHide();
+    if (res.ok) refresh();
+    else alert("Error");
   };
 
   if (!shop) return;
@@ -106,7 +103,7 @@ function EditMyAccountModal({ show, onHide, refresh, shop }) {
       </Modal.Body>
 
       <Modal.Footer>
-        <button className="btn-cncl fw-semibold px-4 py-2 rounded-3" onClick={() => setShowEdit(false)}>
+        <button className="btn-cncl fw-semibold px-4 py-2 rounded-3" onClick={onHide}>
           Cancel
         </button>
         <button className="btn-1 fw-semibold px-4 py-2 rounded-3" onClick={handleSave}>
