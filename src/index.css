@@ -179,6 +179,23 @@
   cursor: pointer;
 }
 
+.conv-tile:hover {
+  background-color: #FDF0B0
+}
+.conv-tile-selected {
+  background-color: #FCEC9C
+}
+.msg-tile-me {
+  background-color: #FEFBEB;
+  padding: 0.25rem 1rem;
+  margin-left: 4rem;
+}
+.msg-tile-you {
+  background-color: #F5F0E1;
+  padding: 0.25rem 1rem;
+  margin-right: 4rem;
+}
+
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

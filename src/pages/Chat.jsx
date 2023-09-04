@@ -27,7 +27,7 @@ function Chat() {
       })
       .then((res) => {
         const request = res.request.map((i) => ({ ...i, sending: [], isTyping: false, intervalId: null }));
-        setConversations(request);
+        setConversations(request.reverse());
         conversationsRef.current = request;
       });
 
@@ -216,42 +216,53 @@ function Chat() {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
       <NavBar />
-      <h3>Chat</h3>
       <div style={{ display: "flex", flexGrow: "1" }}>
-        <div style={{ display: "flex", flexDirection: "column", width: "250px" }}>
+        <div className="d-flex flex-column" style={{ width: "250px", backgroundColor: "#FEF7D7" }}>
+          <div className="fw-semibold fs-5 py-3 ps-3 pe-1" style={{ height: "60px" }}>
+            Messages
+          </div>
+          <hr className="m-0" />
           {/* CONVERSATION TILES */}
-          {conversations?.map((chat, index) => (
-            <div key={index} style={{ border: "1px solid black", padding: "0.5rem 1rem", cursor: "pointer" }} onClick={() => handleSelectChatId(chat._id)}>
-              {userType === "Customer" && <div style={{ fontWeight: "500" }}>{chat.shop.name}</div>}
-              {userType === "Shop" && <div style={{ fontWeight: "500" }}>{`${chat.customer.first_name} ${chat.customer.last_name}`}</div>}
-              {userType !== chat.last_message?.sender && <div>{chat.last_message?.message}</div>}
-              {userType === chat.last_message?.sender && <div>{`You: ${chat.last_message?.message}`}</div>}
-            </div>
-          ))}
+          <div className="d-flex flex-column">
+            {conversations?.map((chat, index) => (
+              <div className={`conv-tile rounded-4 ptr px-3 py-3 ${selectedChatId === chat._id ? "conv-tile-selected" : ""}`} onClick={() => handleSelectChatId(chat._id)} key={index}>
+                {userType === "Customer" && <div className="fw-semibold">{chat.shop.name}</div>}
+                {userType === "Shop" && <div className="fw-semibold">{`${chat.customer.first_name} ${chat.customer.last_name}`}</div>}
+                {userType !== chat.last_message?.sender && <div>{chat.last_message?.message}</div>}
+                {userType === chat.last_message?.sender && <div>{`You: ${chat.last_message?.message}`}</div>}
+              </div>
+            ))}
+          </div>
         </div>
-        {/* {selectedChat !== null && ( */}
-        <div style={{ flex: 1, border: "1px solid black", padding: "0.5rem", display: "flex", flexDirection: "column" }}>
+
+        <div className="d-flex flex-column flex-fill">
           {/* HEADER */}
-          <div>
-            <h5>
+          <div className="d-flex align-items-center px-3" style={{ backgroundColor: "#FEF7D7", height: "60px" }}>
+            <h5 className="m-0 fw-semibold">
               {userType === "Shop" && selectedChat !== null && `${selectedChat?.customer?.first_name} ${selectedChat?.customer.last_name}`}
               {userType === "Customer" && selectedChat !== null && selectedChat?.shop.name}
             </h5>
           </div>
+          <hr className="m-0" />
 
           {/* ALL MESSAGES */}
-          <div ref={scrollableRef} style={{ display: "flex", flexDirection: "column", gap: "0.20rem", overflowY: "scroll", flexGrow: "1", height: "1px", padding: "1rem 0rem" }}>
+          <div
+            className="d-flex flex-column py-3 px-2"
+            ref={scrollableRef}
+            style={{ gap: "0.20rem", overflowY: "scroll", flexGrow: "1", height: "1px", background: "radial-gradient(circle, rgba(252,250,238,1) 35%, rgba(240,229,168,1) 100%)" }}>
             {/* MESSAGES */}
             {selectedChat?.messages.map((chat, index) => (
               <div key={index}>
                 {chat?.sender === userType ? (
                   <div style={{ display: "flex", justifyContent: "end" }}>
-                    <div style={{ border: "1px solid black", padding: "0rem 0.75rem", marginLeft: "4rem", borderRadius: "20px" }}>{chat.message}</div>
+                    <div className="msg-tile-me rounded-pill">{chat.message}</div>
+                    {/* <div style={{ border: "1px solid black", padding: "0rem 0.75rem", marginLeft: "4rem", borderRadius: "20px" }}>{chat.message}</div> */}
                   </div>
                 ) : (
-                  <div style={{ display: "flex", justifyContent: "start", gap: "0.5rem" }}>
+                  <div className="d-flex align-items-center gap-2">
                     {displayProfilePicture(index)}
-                    <div style={{ border: "1px solid black", padding: "0rem 0.75rem", marginRight: "4rem", borderRadius: "20px" }}>{chat.message}</div>
+                    {/* <div style={{ border: "1px solid black", padding: "0rem 0.75rem", marginRight: "4rem", borderRadius: "20px" }}>{chat.message}</div> */}
+                    <div className="msg-tile-you rounded-pill">{chat.message}</div>
                   </div>
                 )}
                 {showStatus(index)}
@@ -262,7 +273,7 @@ function Chat() {
               <div style={{ display: "flex", flexDirection: "column", gap: "0.20rem", marginTop: "0.5rem" }}>
                 {selectedChat.sending.map((message, index) => (
                   <div key={index} style={{ display: "flex", justifyContent: "end" }}>
-                    <div style={{ border: "1px solid", borderColor: "#555555", padding: "0rem 0.75rem", marginLeft: "4rem", color: "#555555", borderRadius: "20px" }}>{message}</div>
+                    <div className="msg-tile-me rounded-pill">{message}</div>
                   </div>
                 ))}
                 <div style={{ display: "flex", justifyContent: "end" }}>
@@ -274,10 +285,11 @@ function Chat() {
             {selectedChat?.isTyping && <div style={{ color: "#555555" }}>Typing...</div>}
           </div>
 
+          <hr className="m-0" />
           {/* MESSAGE BOX */}
-          <form style={{ display: "flex" }}>
-            <input type="text" placeholder="Enter a message" value={message} onChange={handleMessageChange} style={{ flex: 1 }} />
-            <button type="submit" onClick={handleSend}>
+          <form className="d-flex py-2 ps-2 gap-1" style={{ backgroundColor: "#FEF7D7" }}>
+            <input type="text" className="form-control rounded-pill px-3" placeholder="Enter a message" value={message} onChange={handleMessageChange} style={{ flex: 1 }} />
+            <button type="submit" className="btn px-3" onClick={handleSend}>
               Send
             </button>
           </form>
