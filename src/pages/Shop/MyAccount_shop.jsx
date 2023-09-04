@@ -1,7 +1,8 @@
 import { useState, useEffect, Fragment } from "react";
+import { Loader } from "@googlemaps/js-api-loader";
 import NavBar from "../../components/NavBar";
-import { Modal } from "react-bootstrap";
 import EditMyAccountModal from "../../components/Modals/Shop/EditMyAccountModal";
+import NotFound from "../NotFound";
 
 const stocksModel = [
   ["Small", "stock_small"],
@@ -12,7 +13,7 @@ const stocksModel = [
   ["Fruit Jelly", "stock_fruitjelly"],
 ];
 function MyAccountShop() {
-  const [myAccount, setMyAccount] = useState(null);
+  const [myAccount, setMyAccount] = useState("LOADING");
   const [showEdit, setShowEdit] = useState(false);
 
   useEffect(() => {
@@ -20,13 +21,25 @@ function MyAccountShop() {
   }, []);
 
   const loadMyAccount = async () => {
-    fetch(`${import.meta.env.VITE_API}/my-account`, { method: "GET", credentials: "include" })
-      .then((res) => res.json())
-      .then((res) => setMyAccount(res.request));
+    const res = await fetch(`${import.meta.env.VITE_API}/my-account`, { method: "GET", credentials: "include" });
+    if (!res.ok) return setMyAccount(null);
+    const { request: data } = await res.json();
+    setMyAccount(data);
+    const loader = new Loader({ apiKey: import.meta.env.VITE_MAPS_API, version: "weekly" });
+    loader.importLibrary("maps").then(() => {
+      new window.google.maps.Map(document.getElementById("map"), {
+        center: { lat: data.pin_address_lat, lng: data.pin_address_lng },
+        zoom: 13,
+        mapTypeControlOptions: { mapTypeIds: [] },
+        streetViewControl: false,
+        fullscreenControl: false,
+        zoomControl: false,
+        gestureHandling: "none",
+      });
+    });
   };
 
-  useEffect(() => console.log("myAccount:", myAccount), [myAccount]);
-
+  if (myAccount === null) return <NotFound />;
   return (
     <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
       <NavBar />
@@ -75,6 +88,15 @@ function MyAccountShop() {
                       {/* <input type="number" className="form-control" placeholder={stock[0]} value={myAccount?.[stock[1]] || 0} min="0" max="999" disabled /> */}
                     </Fragment>
                   ))}
+                </div>
+              </div>
+              <hr className="my-4" />
+
+              {/* MAP */}
+              <div className="card p-3 mt-2 w-100">
+                <div style={{ position: "relative", width: "100%", alignSelf: "center" }}>
+                  <div id="map" style={{ height: "300px", width: "100%", position: "relative" }} />
+                  <img src="marker.png" alt="marker" style={{ position: "absolute", top: "calc(50% - 20px)", left: "calc(50% - 6px)", height: "20px" }} />
                 </div>
               </div>
             </div>

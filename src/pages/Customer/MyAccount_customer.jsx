@@ -1,18 +1,35 @@
 import { useState, useEffect } from "react";
+import { Loader } from "@googlemaps/js-api-loader";
 import NavBar from "../../components/NavBar";
+import NotFound from "../NotFound";
 
 function MyAccountCustomer() {
-  const [myAccount, setMyAccount] = useState(null);
+  const [myAccount, setMyAccount] = useState("LOADING");
 
   useEffect(() => {
-    const init = async () => {
-      const res = await fetch(`${import.meta.env.VITE_API}/my-account`, { method: "GET", credentials: "include" });
-      if (res.ok) setMyAccount((await res.json()).request);
-    };
-    init();
+    loadMyAccount();
   }, []);
 
-  if (!myAccount) return;
+  const loadMyAccount = async () => {
+    const res = await fetch(`${import.meta.env.VITE_API}/my-account`, { method: "GET", credentials: "include" });
+    if (!res.ok) setMyAccount(null);
+    const { request: data } = await res.json();
+    setMyAccount(data);
+    const loader = new Loader({ apiKey: import.meta.env.VITE_MAPS_API, version: "weekly" });
+    loader.importLibrary("maps").then(() => {
+      new window.google.maps.Map(document.getElementById("map"), {
+        center: { lat: data.pin_address_lat, lng: data.pin_address_lng },
+        zoom: 13,
+        mapTypeControlOptions: { mapTypeIds: [] },
+        streetViewControl: false,
+        fullscreenControl: false,
+        zoomControl: false,
+        gestureHandling: "none",
+      });
+    });
+  };
+
+  if (myAccount === null) return <NotFound />;
 
   return (
     <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
@@ -39,6 +56,17 @@ function MyAccountCustomer() {
                 <div className="fw-semibold me-2">Pin Address:</div>
                 <div>{myAccount?.pin_address}</div>
               </div>
+              <hr />
+
+              {/* MAP */}
+              {myAccount !== "LOADING" && (
+                <div className="card p-3 mt-2 w-100">
+                  <div style={{ position: "relative", width: "100%", alignSelf: "center" }}>
+                    <div id="map" style={{ height: "300px", width: "100%", position: "relative" }} />
+                    <img src="marker.png" alt="marker" style={{ position: "absolute", top: "calc(50% - 20px)", left: "calc(50% - 6px)", height: "20px" }} />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
