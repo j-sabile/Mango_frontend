@@ -98,6 +98,17 @@
 }
 
 
+.monospace { 
+  font-family: monospace;
+}
+
+.dashed-hr {
+  border: none;
+  height: 1px;
+  background-image: repeating-linear-gradient(to right, transparent, transparent 10px, black 10px, black 20px);
+  background-size: 20px 1px;
+  background-position: 0 0;
+}
 
 
 

@@ -1,7 +1,9 @@
-import NavBar from "../../components/NavBar";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import NavBar from "../../components/NavBar";
 
 function Orders() {
+  const navigate = useNavigate();
   const handleMoveToCancelled = async (orderId, toRefresh) => await handleMoveOrder(orderId, "Cancelled", [toRefresh, "Cancelled"]);
   const handleMoveToPreparing = async (orderId) => await handleMoveOrder(orderId, "Preparing", ["Placed", "Preparing"]);
   const handleMoveToOutForDelivery = async (orderId) => await handleMoveOrder(orderId, "Out For Delivery", ["Preparing", "Out For Delivery"]);
@@ -140,7 +142,7 @@ function Orders() {
             {/* NAVIGATION BODY */}
             <div className="d-flex flex-column gap-3 px-0 px-sm-5 py-2 flex-fill" style={{ overflowY: "auto", height: "1px" }}>
               {myOrders.map((order, index) => (
-                <div className="card d-flex flex-column border-0 rounded-4 px-4 py-3" style={{ boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.2)" }} key={index}>
+                <div className="card d-flex flex-column border-0 rounded-4 px-4 py-3" onClick={() => navigate(`/order/${order._id}`)} style={{ boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.2)" }} key={index}>
                   <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ fontSize: "12pt", fontWeight: "500" }}>{`${order.customer.first_name} ${order.customer.last_name}`}</div>
 

@@ -16,6 +16,7 @@ import MyOrders from "./pages/Customer/MyOrders_customer";
 import Orders from "./pages/Shop/Orders_shop";
 import NotFound from "./pages/NotFound";
 import MyAccount from "./pages/MyAccount";
+import Order from "./pages/Order";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
 
   { path: "/chat", element: <Chat /> },
   { path: "/my-account", element: <MyAccount /> },
+  { path: "/order/:orderId", element: <Order /> },
 
   // not found
   { path: "/*", element: <NotFound /> },

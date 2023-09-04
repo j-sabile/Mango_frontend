@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import NavBar from "../../components/NavBar";
 
 const navOptions = ["Placed", "Preparing", "Out For Delivery", "Delivered", "Cancelled"];
 
 function MyOrders() {
+  const navigate = useNavigate();
   const [myOrders, setMyOrders] = useState([]);
   const [placedOrders, setPlacedOrders] = useState([]);
   const [preparedOrders, setPreparedOrders] = useState([]);
@@ -78,7 +80,7 @@ function MyOrders() {
             {/* NAVIGATION BODY */}
             <div className="d-flex flex-column gap-3 px-0 px-sm-5 py-2 flex-fill" style={{ overflowY: "auto", height: "1px" }}>
               {myOrders.map((order, index) => (
-                <div className="card d-flex flex-column border-0 rounded-4 px-4 py-3" style={{ boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.2)" }} key={index}>
+                <div className="card d-flex flex-column border-0 rounded-4 px-4 py-3" onClick={() => navigate(`/order/${order._id}`)} style={{ boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.2)" }} key={index}>
                   <div style={{ fontSize: "10pt", fontWeight: "500" }}>{order.shop.name}</div>
                   <hr />
                   {order.order_items.map((orderItem, index2) => (
