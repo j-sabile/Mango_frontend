@@ -32,18 +32,18 @@ function Order() {
           {/* ORDER INFO */}
           <div className="card d-flex flex-column border-0 rounded-4" onClick={() => navigate(`/order/${order._id}`)} style={{ boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.2)" }}>
             {/* HEADER */}
-            <div className="d-flex gap-4 rounded-top-4 py-3 px-4 px-sm-5 " style={{ fontFamily: "monospace", backgroundColor: "#FFDB70" }}>
+            <div className="bg-1 d-flex gap-4 rounded-top-4 py-3 px-4 px-sm-5 ">
               <div className="flex-fill text-start">
-                <div className="fw-semibold" style={{ color: "grey" }}>
+                <div className="monospace fw-semibold" style={{ color: "grey" }}>
                   NAME
                 </div>
-                <div className="fw-semibold">{`${order.customer.first_name} ${order.customer.last_name}`.toUpperCase()}</div>
+                <div className="monospace fw-semibold">{`${order.customer.first_name} ${order.customer.last_name}`.toUpperCase()}</div>
               </div>
               <div className="flex-fill text-end">
-                <div className="fw-semibold" style={{ color: "grey" }}>
+                <div className="monospace fw-semibold" style={{ color: "grey" }}>
                   SHOP
                 </div>
-                <div className="fw-semibold">{order.shop.name.toUpperCase()}</div>
+                <div className="monospace fw-semibold">{order.shop.name.toUpperCase()}</div>
               </div>
             </div>
 
@@ -76,10 +76,8 @@ function Order() {
             <hr className="dashed-hr m-0" />
 
             <div className="d-flex justify-content-between align-items-center px-4 px-sm-5 py-3">
-              <div className="monospace text-end">{order.payment.toUpperCase()}</div>
-              <div className="monospace" style={{ fontSize: "12pt" }}>
-                {`${new Date(order.order_date).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}`.toUpperCase()}
-              </div>
+              <div className="monospace text-start">{order.payment.toUpperCase()}</div>
+              <div className="monospace text-end">{`${new Date(order.order_date).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}`.toUpperCase()}</div>
             </div>
           </div>
         </div>

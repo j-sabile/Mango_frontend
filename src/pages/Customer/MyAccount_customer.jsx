@@ -59,14 +59,12 @@ function MyAccountCustomer() {
               <hr />
 
               {/* MAP */}
-              {myAccount !== "LOADING" && (
-                <div className="card p-3 mt-2 w-100">
-                  <div style={{ position: "relative", width: "100%", alignSelf: "center" }}>
-                    <div id="map" style={{ height: "300px", width: "100%", position: "relative" }} />
-                    <img src="marker.png" alt="marker" style={{ position: "absolute", top: "calc(50% - 20px)", left: "calc(50% - 6px)", height: "20px" }} />
-                  </div>
+              <div className="card p-3 mt-2 w-100">
+                <div style={{ position: "relative", width: "100%", alignSelf: "center" }}>
+                  <div id="map" style={{ height: "300px", width: "100%", position: "relative" }} />
+                  <img src="marker.png" alt="marker" style={{ position: "absolute", top: "calc(50% - 20px)", left: "calc(50% - 6px)", height: "20px" }} />
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>

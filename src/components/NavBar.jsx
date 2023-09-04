@@ -47,9 +47,9 @@ function NavBar() {
   };
 
   return (
-    <div style={{ backgroundColor: "#FFD60A" }}>
+    <div className="bg-1">
       <div className="container d-flex justify-content-between align-items-center py-1">
-        <img src="mango_icon.png" alt="mango icon" height="60px" width="60px" tabIndex="0" onClick={() => navigate("/")} style={{ cursor: "pointer" }} onKeyDown={(e) => e.key === "Enter" && navigate("/")} />
+        <img src="/mango_icon.png" alt="mango icon" height="60px" width="60px" tabIndex="0" onClick={() => navigate("/")} style={{ cursor: "pointer" }} onKeyDown={(e) => e.key === "Enter" && navigate("/")} />
 
         {isLoggedIn !== null &&
           (isLoggedIn ? (
@@ -75,7 +75,7 @@ function NavBar() {
               </div>
             </div>
           ) : (
-            <button className="btn px-4" style={{ backgroundColor: "#F3F3F3", fontWeight: "500" }} onClick={() => navigate("/sign-in")}>
+            <button className="btn-wht myFont px-4 py-2 rounded-3 fw-semibold" onClick={() => navigate("/sign-in")}>
               Sign In
             </button>
           ))}

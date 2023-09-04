@@ -301,7 +301,7 @@ function CreateOrder() {
       <Modal show={showOrderSuccess} onHide={() => setShowOrderSuccess(false)} centered={true}>
         <div className="d-flex flex-column align-items-center gap-4" style={{ padding: "3rem 4rem" }}>
           <h3 className="text-center">Order success!</h3>
-          <button className="btn-1 px-4 py-2 rounded-2 fw-semibold" onClick={() => setShowOrderSuccess(false)}>
+          <button className="btn-1 px-4 py-2 rounded-2 fw-semibold" onClick={() => navigate("/my-orders")}>
             Continue
           </button>
         </div>

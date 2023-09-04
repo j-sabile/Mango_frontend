@@ -142,17 +142,16 @@ function Orders() {
             {/* NAVIGATION BODY */}
             <div className="d-flex flex-column gap-3 px-0 px-sm-5 py-2 flex-fill" style={{ overflowY: "auto", height: "1px" }}>
               {myOrders.map((order, index) => (
-                <div className="card d-flex flex-column border-0 rounded-4 px-4 py-3" onClick={() => navigate(`/order/${order._id}`)} style={{ boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.2)" }} key={index}>
+                <div className="card d-flex flex-column border-0 rounded-4 px-3 px-sm-5 py-3" style={{ boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.2)" }} key={index}>
                   <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ fontSize: "12pt", fontWeight: "500" }}>{`${order.customer.first_name} ${order.customer.last_name}`}</div>
-
+                    <div className="ptr w-100" onClick={() => navigate(`/order/${order._id}`)}>{`${order.customer.first_name} ${order.customer.last_name}`}</div>
                     {/* DROPDOWN */}
                     {selectedNav.dropdown && (
-                      <div className="dropdown">
+                      <div className="dropdown" key={index}>
                         <button className="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" />
                         <div className="dropdown-menu">
                           {selectedNav.dropdown.map((option, index) => (
-                            <button className="dropdown-item btn" onClick={() => option.onClick(order._id, selectedNav.name)} key={index}>
+                            <button className="dropdown-item btn" onClick={(e) => option.onClick(order._id, selectedNav.name, e)} key={index}>
                               {option.name}
                             </button>
                           ))}
@@ -160,20 +159,22 @@ function Orders() {
                       </div>
                     )}
                   </div>
-                  <hr />
-                  {order.order_items.map((orderItem, index2) => (
-                    <div className="d-flex justify-content-between my-1 px-2" key={index2}>
-                      <div>{`${orderItem.amount}x ${orderItem.size} ${orderItem.free_addon || ""}${orderItem.addons ? `,  Addons: ${orderItem.addons.join(", ")}` : ""}`}</div>
-                      <div>{`₱${orderItem.subtotal}`}</div>
-                    </div>
-                  ))}
-                  <hr />
+                  <div className="ptr" onClick={() => navigate(`/order/${order._id}`)}>
+                    <hr />
+                    {order.order_items.map((orderItem, index) => (
+                      <div className="d-flex justify-content-between my-1 px-2" key={index}>
+                        <div>{`${orderItem.amount}x ${orderItem.size} ${orderItem.free_addon || ""}${orderItem.addons ? `,  Addons: ${orderItem.addons.join(", ")}` : ""}`}</div>
+                        <div>{`₱${orderItem.subtotal}`}</div>
+                      </div>
+                    ))}
+                    <hr />
 
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div style={{ fontSize: "10pt" }}>{new Date(order.order_date).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</div>
-                    <div className="text-end">
-                      <span style={{ fontSize: "13pt" }}>Order Total: </span>
-                      <span style={{ fontSize: "15pt", fontWeight: "500" }}>{`₱${order.total}`}</span>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div style={{ fontSize: "10pt" }}>{new Date(order.order_date).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</div>
+                      <div className="text-end">
+                        <span style={{ fontSize: "13pt" }}>Order Total: </span>
+                        <span style={{ fontSize: "15pt", fontWeight: "500" }}>{`₱${order.total}`}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
