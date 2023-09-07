@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import SpinUpNotify from "../components/SpinUpNotify";
@@ -5,11 +6,48 @@ import SpinUpNotify from "../components/SpinUpNotify";
 function Home() {
   const navigate = useNavigate();
   const userType = localStorage.getItem("userType");
+  const [showWait, setShowWait] = useState(false);
+  const [showLoaded, setShowLoaded] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [status, setStatus] = useState("LOADING");
+  const [orderClicked, setOrderClicked] = useState(false);
+
+  useEffect(() => {
+    const init = async () => {
+      let showNoResponse = false;
+      const handleNoResponse = () => {
+        setStatus("WAITING");
+        setShowWait(true);
+        showNoResponse = true;
+      };
+      const handleResponseReceived = () => {
+        setStatus("RECEIVED");
+        setShowWait(false);
+        setShowLoaded(true);
+      };
+      let timer = setTimeout(() => handleNoResponse(), 2000);
+      const res = await fetch(`${import.meta.env.VITE_API}/`);
+      clearTimeout(timer);
+      if (res.ok && showNoResponse) handleResponseReceived();
+      else if (res.ok) setStatus("RECEIVED");
+      else !res.ok && setShowError(true);
+    };
+    init();
+  }, []);
+
+  useEffect(() => {
+    if (status === "WAITING" && orderClicked) {
+      setShowWait(true);
+      setOrderClicked(false);
+    }
+  }, [status, orderClicked]);
 
   const handleOrderNow = () => {
-    console.log(userType);
-    if (userType === "Customer") navigate("/create-order");
-    else if (userType === null) navigate("/sign-in");
+    setOrderClicked(true);
+    if (status !== "LOADING" && status !== "WAITING") {
+      if (userType === "Customer") navigate("/create-order");
+      else if (userType === null) navigate("/sign-in");
+    }
   };
 
   return (
@@ -33,7 +71,7 @@ function Home() {
             </div>
           </div>
         </section>
-        <SpinUpNotify />
+        <SpinUpNotify show={{ showWait, showLoaded, showError }} onHide={{ setShowWait, setShowLoaded, setShowError }} />
       </div>
     </>
   );

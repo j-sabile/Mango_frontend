@@ -1,30 +1,8 @@
-import { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 
-function SpinUpNotify() {
-  const [showWait, setShowWait] = useState(false);
-  const [showLoaded, setShowLoaded] = useState(false);
-  const [showError, setShowError] = useState(false);
-
-  useEffect(() => {
-    const init = async () => {
-      let showNoResponse = false;
-      const handleNoResponse = () => {
-        setShowWait(true);
-        showNoResponse = true;
-      };
-      const handleResponseReceived = () => {
-        setShowWait(false);
-        setShowLoaded(true);
-      };
-      let timer = setTimeout(() => handleNoResponse(), 2000);
-      const res = await fetch(`${import.meta.env.VITE_API}/`);
-      clearTimeout(timer);
-      if (res.ok && showNoResponse) handleResponseReceived();
-      else !res.ok && setShowError(true);
-    };
-    init();
-  }, []);
+function SpinUpNotify({ show, onHide }) {
+  const { showWait, showLoaded, showError } = show;
+  const { setShowWait, setShowLoaded, setShowError } = onHide;
 
   return (
     <>
