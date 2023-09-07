@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import NavBar from "../components/NavBar";
 
@@ -7,6 +7,7 @@ function SignIn() {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [signInLoading, setSignInLoading] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -20,18 +21,16 @@ function SignIn() {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    fetch(`${import.meta.env.VITE_API}/sign-in`, {
+    setSignInLoading(true);
+    const res = await fetch(`${import.meta.env.VITE_API}/sign-in`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: email, password: password }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        if (res.success) navigate("/");
-        else alert("Wrong Credentials");
-      });
+    });
+    setSignInLoading(false);
+    if (res.ok) navigate("/");
+    else alert("Wrong Credentials");
   };
 
   if (loading) return;
@@ -45,8 +44,15 @@ function SignIn() {
           <form className="d-flex flex-column gap-2">
             <input type="email" className="form-control" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus />
             <input type="password" className="form-control" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            <button type="submit" className="btn-1 py-2 rounded-pill w-100 my-3 fw-semibold" onClick={handleSignIn} style={{ fontWeight: "500", fontSize: "14pt", letterSpacing: "0.2px" }}>
-              SIGN IN
+            <button type="submit" className="btn-1 py-2 rounded-pill w-100 my-3 fw-semibold" onClick={handleSignIn} disabled={signInLoading} style={{ fontSize: "14pt", letterSpacing: "0.2px" }}>
+              {signInLoading ? (
+                <Fragment>
+                  <span className="spinner-border spinner-border-sm" aria-hidden="true" />
+                  <span role="status">SIGNING IN...</span>
+                </Fragment>
+              ) : (
+                <Fragment>SIGN IN</Fragment>
+              )}
             </button>
             <a className="align-self-end" href="#">
               Forgot Password

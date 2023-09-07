@@ -1,5 +1,5 @@
 import NavBar from "../components/NavBar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
@@ -17,6 +17,7 @@ function CreateAccount() {
   const [logInMessage, setLogInMessage] = useState("");
   const [showCreateAccountSuccess, setShowCreateAccountSuccess] = useState(false);
   const [validated, setValidated] = useState(false);
+  const [createAccountLoading, setCreateAccountLoading] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -40,11 +41,12 @@ function CreateAccount() {
     init();
   }, []);
 
-  const handleCreateAccount = (e) => {
+  const handleCreateAccount = async (e) => {
     e.preventDefault();
+    setCreateAccountLoading(true);
     setValidated(true);
     if (validateEmail() && validatePassword() && validateFirstName() && validateLastName && validateAddress() && validatePhoneNumber()) {
-      fetch(`${import.meta.env.VITE_API}/sign-up`, {
+      await fetch(`${import.meta.env.VITE_API}/sign-up`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -62,6 +64,7 @@ function CreateAccount() {
         else if (res.status === 400) res.json().then((error) => setLogInMessage(error.error));
       });
     }
+    setCreateAccountLoading(false);
   };
 
   const validateEmail = () => /^[\w.-]+@[a-zA-Z_-]+?(?:\.[a-zA-Z]{2,6})+$/.test(email);
@@ -155,8 +158,15 @@ function CreateAccount() {
             </div>
 
             {/* CREATE ACCOUNT BTN */}
-            <button type="submit" className="btn-1 px-5 py-2 mt-3 rounded-4 fw-semibold" onClick={handleCreateAccount}>
-              Create Account
+            <button type="submit" className="btn-1 px-5 py-2 mt-3 rounded-4 fw-semibold" onClick={handleCreateAccount} disabled={createAccountLoading}>
+              {createAccountLoading ? (
+                <Fragment>
+                  <span className="spinner-border spinner-border-sm" aria-hidden="true" />
+                  <span role="status">Creating Account...</span>
+                </Fragment>
+              ) : (
+                <Fragment>Creating Account</Fragment>
+              )}
             </button>
           </form>
         </div>

@@ -19,6 +19,8 @@ function CreateOrder() {
   const [showOrderSuccess, setShowOrderSuccess] = useState(false);
   const [checkoutInfo, setCheckoutInfo] = useState(null);
   const [addOrder, setAddOrder] = useState({ shopId: null, amount: 1, size: null, freeAddon: null, nata: 0, pearl: 0, fruitJelly: 0, payment: "" });
+  const [buyNowLoading, setBuyNowLoading] = useState(false);
+  const [placeOrderLoading, setPlaceOrderLoading] = useState(false);
 
   const freeAddon = [
     { name: "Nata", src: "nata.png", onClick: (e) => setAddOrder({ ...addOrder, nata: addOrder.nata + e }), value: addOrder.nata },
@@ -44,6 +46,7 @@ function CreateOrder() {
   }, []);
 
   const handlePlaceOrder = async () => {
+    setPlaceOrderLoading(true);
     let test = [];
     if (addOrder.nata === 0 && addOrder.pearl === 0 && addOrder.fruitJelly === 0) test = undefined;
     else {
@@ -66,9 +69,11 @@ function CreateOrder() {
       setShowCheckout(false);
       setShowOrderSuccess(true);
     } else alert(responseData.message);
+    setPlaceOrderLoading(false);
   };
 
   const handleBuyNow = async () => {
+    setBuyNowLoading(true);
     let test = [];
     if (addOrder.nata === 0 && addOrder.pearl === 0 && addOrder.fruitJelly === 0) test = undefined;
     else {
@@ -89,9 +94,11 @@ function CreateOrder() {
       setCheckoutInfo((await res.json()).request);
       setShowCheckout(true);
     }
+    setBuyNowLoading(false);
   };
 
   const statusPreBuyNow = () => {
+    if (buyNowLoading) return true;
     if (!sizes.includes(addOrder.size)) return true;
     if (addOrder.shopId === "" || addOrder.shopId === null) return true;
     return false;
@@ -192,6 +199,7 @@ function CreateOrder() {
               </div>
             </div>
 
+            {/* SELECT OPTIONAL ADDON */}
             <div className="d-flex flex-column align-items-center gap-1 px-2">
               <h4 className="text-center">{"Add another addon (optional)"}</h4>
               <div className="d-flex gap-2">
@@ -227,7 +235,14 @@ function CreateOrder() {
             <div className="d-flex justify-content-end px-3">
               {/* <button>Add To Cart</button> */}
               <button className="btn-1 px-4 py-2 rounded-3 fw-semibold" disabled={statusPreBuyNow()} onClick={handleBuyNow}>
-                Buy Now
+                {buyNowLoading ? (
+                  <Fragment>
+                    <span className="spinner-border spinner-border-sm" aria-hidden="true" />
+                    <span role="status">Buy Now...</span>
+                  </Fragment>
+                ) : (
+                  <Fragment>Buy Now</Fragment>
+                )}
               </button>
             </div>
           </div>
@@ -290,8 +305,15 @@ function CreateOrder() {
             </div>
           </ModalBody>
           <ModalFooter>
-            <button className="btn-1 px-4 py-2 rounded-3 fw-semibold" onClick={handlePlaceOrder} disabled={!paymentMethods.includes(addOrder.payment)}>
-              Place Order
+            <button className="btn-1 px-4 py-2 rounded-3 fw-semibold" onClick={handlePlaceOrder} disabled={!paymentMethods.includes(addOrder.payment) || placeOrderLoading}>
+              {placeOrderLoading ? (
+                <Fragment>
+                  <span className="spinner-border spinner-border-sm" aria-hidden="true" />
+                  <span role="status">Placing Order...</span>
+                </Fragment>
+              ) : (
+                <Fragment>Place Order</Fragment>
+              )}
             </button>
           </ModalFooter>
         </Modal>
