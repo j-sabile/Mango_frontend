@@ -123,6 +123,29 @@
 }
 
 
+/* DROPDOWN BUTTON */
+.btn-drpdwn {
+  background-color: #FFFFFF;
+  color:#000814;
+  transition: 0.1s ease;
+  cursor: pointer;
+}
+.btn-drpdwn:hover {
+  background-color: #F5F5F5;
+}
+.btn-drpdwn:focus {
+  outline: none;
+  transform: translateY(2px);
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+}
+.btn-drpdwn:active {
+  transform: scale(1.05);  
+}
+.btn-drpdwn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 
 /* BACKGROUNDS */
 .bg-1 {
@@ -130,6 +153,18 @@
 }
 .bg-trnsprnt {
   background-color: rgba(255, 255, 255, 100);
+}
+
+
+/* COLORS */
+.c-1 {
+  color: #FFC71F;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ourmenu {
+  font-size: 3rem;
+  font-weight: 800;
 }
 
 
@@ -194,6 +229,18 @@
   background-color: #F5F0E1;
   padding: 0.25rem 1rem;
   margin-right: 4rem;
+}
+
+.nav-rmv-a {
+  text-decoration: none;
+  padding: 0.25rem 1.5rem;
+  font-size: 13pt;
+  font-weight: 600;
+  color: #000814;
+  transition: 0.15s ease;
+}
+.nav-rmv-a:hover {
+  background-color: #F2F3F4;  
 }
 
 /* :root {
