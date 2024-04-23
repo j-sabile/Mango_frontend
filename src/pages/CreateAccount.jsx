@@ -165,7 +165,7 @@ function CreateAccount() {
                   <span role="status">Creating Account...</span>
                 </Fragment>
               ) : (
-                <Fragment>Creating Account</Fragment>
+                <Fragment>Create Account</Fragment>
               )}
             </button>
           </form>
